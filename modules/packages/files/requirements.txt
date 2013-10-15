@@ -1,0 +1,8 @@
+flask
+flask-sqlalchemy
+hg+https://edulix@bitbucket.org/edulix/apscheduler#egg=apscheduler
+ipdb
+git+https://github.com/edulix/requests.git#egg=requests
+prettytable
+pyopenssl
+uwsgi
