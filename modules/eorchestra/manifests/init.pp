@@ -1,8 +1,9 @@
-class eorchestra {
+# use fqdn when necessary
+class eorchestra($port = '5000', $host = $ipaddress) {
     require user
     require packages
     require verificatum       
-        
+
     exec { '/vagrant/modules/eorchestra/shell/setup.sh':
         # FIXME
         # 'puppet:///modules/eorchestra/setup.sh':          

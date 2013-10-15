@@ -34,8 +34,8 @@ http {
     }
 
     server {
-        listen  5000 ssl;
-        server_name 127.0.0.1;
+        listen  <%= scope.lookupvar('eorchestra::port') %> ssl;
+        server_name <%= scope.lookupvar('eorchestra::host') %>;
 
         add_header Strict-Transport-Security max-age=31536000;
         ssl_verify_client optional_no_ca;
