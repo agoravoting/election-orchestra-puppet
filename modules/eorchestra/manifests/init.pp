@@ -1,13 +1,14 @@
 class eorchestra {
     require user
     require packages
-    require verificatum
+    require verificatum    
         
     exec { '/vagrant/modules/eorchestra/shell/setup.sh':
         # FIXME
         # 'puppet:///modules/eorchestra/setup.sh':          
         user => 'eorchestra',
         logoutput => true,
+        creates => '/home/eorchestra/election-orchestra',
         require => [Package['git'], User['eorchestra'], Python::Virtualenv['/home/eorchestra/venv']],
     } ->
     file {'/home/eorchestra/election-orchestra/auth.ini':
