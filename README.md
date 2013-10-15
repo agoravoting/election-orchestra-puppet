@@ -1,23 +1,33 @@
-* Install
+Election Orchestra Puppet
+===========
 
-Install the python module
+Puppet-vagrant setup for election orchestra
+
+Installation
+===========
+
+* Install the python module
 
 cd modules
+
 git clone git://github.com/stankevich/puppet-python.git python
 
 * Run
 
 vagrant up
 
-* Access vm
+Accessing the vm
+===========
+
 
 vagrant ssh
 
-* TODO
-
-replace references to vagrant with puppet urls (search for FIXME)
+TODO
+===========
+* replace references to vagrant with puppet urls (search for FIXME)
 
 * Applying puppet manually (for troubleshooting)
 
 cd /vagrant
+
 sudo puppet apply manifests/init.pp --modulepath modules/
