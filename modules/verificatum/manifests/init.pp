@@ -15,6 +15,7 @@ class verificatum {
         # 'puppet:///modules/verificatum/shell/setup.sh':                  
         logoutput => true,
         require => [Package['git'], Package['oracle-java7-installer']],
+        creates => '/home/eorchestra/.verificatum_env',
     }
     
 }

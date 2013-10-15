@@ -3,10 +3,12 @@ class packages::java {
     exec { 'accept-oracle-2':
         command => '/bin/echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections',
         logoutput => true,
+        creates => '/usr/bin/java',
     } ->
     exec { 'accept-oracle-1':
         command => '/bin/echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections',
-        logoutput => true,        
+        logoutput => true,
+        creates => '/usr/bin/java',
     } ->
     package { 'oracle-java7-installer':
         ensure=> present,

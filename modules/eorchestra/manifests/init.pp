@@ -1,7 +1,7 @@
 class eorchestra {
     require user
     require packages
-    require verificatum    
+    require verificatum       
         
     exec { '/vagrant/modules/eorchestra/shell/setup.sh':
         # FIXME
@@ -14,6 +14,10 @@ class eorchestra {
     file {'/home/eorchestra/election-orchestra/auth.ini':
         ensure  => file,        
         content => template('eorchestra/auth.ini.erb'),
+    } -> 
+    file {'/home/eorchestra/election-orchestra/base_settings.py':
+        ensure  => file,        
+        content => template('eorchestra/base_settings.py.erb'),
     } -> 
     file {'/srv/certs/':
         ensure  => directory,
