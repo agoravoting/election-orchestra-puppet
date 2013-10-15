@@ -8,11 +8,7 @@ Installation
 
 * Install virtualbox (https://www.virtualbox.org/)
 * Install vagrant (http://www.vagrantup.com/)
-* Install the python module
-
-cd modules
-
-git clone git://github.com/stankevich/puppet-python.git python
+* Install the puppet-python module (cd modules; git clone git://github.com/stankevich/puppet-python.git python)
 
 * Run
 
@@ -21,15 +17,13 @@ vagrant up
 Accessing the vm
 ===========
 
-
 vagrant ssh
 
 TODO
 ===========
 * replace references to vagrant with puppet urls (search for FIXME)
 
-* Applying puppet manually (for troubleshooting)
+Troubleshooting)
+===========
 
-cd /vagrant
-
-sudo puppet apply manifests/init.pp --modulepath modules/
+* Apply puppet manually with cd /vagrant; sudo puppet apply manifests/init.pp --modulepath modules/
