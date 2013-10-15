@@ -5,5 +5,6 @@ class packages{
     include packages::mercurial
     include packages::nginx
     include packages::py    
-    include packages::java    
+    include packages::java
+    include packages::supervisor
 }
