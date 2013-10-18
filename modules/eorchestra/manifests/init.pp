@@ -4,6 +4,9 @@ class eorchestra($port = '5000', $host = $ipaddress) {
     require packages
     require verificatum       
 
+    file { '/vagrant/modules/eorchestra/shell/setup.sh':
+        mode => 'a+x'
+    } ->
     exec { '/vagrant/modules/eorchestra/shell/setup.sh':
         # FIXME
         # 'puppet:///modules/eorchestra/setup.sh':          

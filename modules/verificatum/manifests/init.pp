@@ -10,6 +10,9 @@ class verificatum {
     package { 'libgmp-dev':
         ensure=> present,
     } ->
+    file { '/vagrant/modules/verificatum/shell/setup.sh':
+        mode => 'a+x'
+    }
     exec { '/vagrant/modules/verificatum/shell/setup.sh':
         # FIXME
         # 'puppet:///modules/verificatum/shell/setup.sh':                  

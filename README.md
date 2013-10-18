@@ -31,7 +31,7 @@ TODO
 ===========
 * replace references to vagrant with puppet urls (search for FIXME)
 
-Troubleshooting)
+Troubleshooting
 ===========
 
 * Apply puppet manually with cd /vagrant; sudo puppet apply manifests/init.pp --modulepath modules/
