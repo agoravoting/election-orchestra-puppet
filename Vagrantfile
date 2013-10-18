@@ -5,9 +5,7 @@ Vagrant.configure("2") do |config|
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
-  
-  # sudo puppet apply  manifests/init.pp  --modulepath modules/
-
+    
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "precise64"
  
@@ -30,9 +28,7 @@ Vagrant.configure("2") do |config|
     puppet.manifests_path = "manifests"
     puppet.manifest_file = "init.pp"
   end
-  
-  # config.vm.provision :shell, :path => "shell/clone.sh"   
-
+    
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
   # config.vm.box_url = "http://domain.com/path/to/above.box"

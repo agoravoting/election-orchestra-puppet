@@ -6,7 +6,6 @@ Puppet-vagrant setup for election orchestra
 Installation
 ===========
 
-* Install virtualbox (https://www.virtualbox.org/)
 * Install vagrant (http://www.vagrantup.com/)
 * Install the puppet-python module (cd modules; git clone git://github.com/stankevich/puppet-python.git python)
 
