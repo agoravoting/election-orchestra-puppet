@@ -6,17 +6,26 @@ Puppet-vagrant setup for election orchestra
 Installation
 ===========
 
-* Install vagrant (http://www.vagrantup.com/)
-* Install the puppet-python module (cd modules; git clone git://github.com/stankevich/puppet-python.git python)
+Install vagrant
+---------
+* http://www.vagrantup.com
 
-* Run
+Download the repository
+---------
+*	git clone https://github.com/agoraciudadana/election-orchestra-puppet.git
 
-vagrant up
+Install the puppet-python module
+---------
+* cd election-orchestra-puppet/modules
+* git clone git://github.com/stankevich/puppet-python.git python
+
+Run
+---------
+* vagrant up
 
 Accessing the vm
 ===========
-
-vagrant ssh
+* vagrant ssh
 
 TODO
 ===========
