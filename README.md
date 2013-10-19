@@ -29,11 +29,7 @@ Accessing the vm
 * sudo -s
 * su - eorhcestra
 
-TODO
-===========
-* replace references to vagrant with puppet urls (search for FIXME)
-
-Troubleshooting
+Applying puppet manually inside the vm
 ===========
 
 * Apply puppet manually with cd /vagrant; sudo puppet apply manifests/init.pp --modulepath modules/
