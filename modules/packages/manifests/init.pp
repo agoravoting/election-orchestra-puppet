@@ -7,4 +7,5 @@ class packages{
     include packages::py    
     include packages::java
     include packages::supervisor
+    include packages::vim
 }
