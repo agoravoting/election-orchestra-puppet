@@ -3,6 +3,6 @@ class user {
       ensure     => present,      
       home       => '/home/eorchestra',
       managehome => true,
-      shell => '/bin/sh'
+      shell => '/bin/bash'
     }
 }
