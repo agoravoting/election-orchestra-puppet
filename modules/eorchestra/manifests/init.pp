@@ -20,10 +20,12 @@ class eorchestra($port = '5000', $host = $ipaddress) {
     file {'/home/eorchestra/election-orchestra/auth.ini':
         ensure  => file,        
         content => template('eorchestra/auth.ini.erb'),
+        owner => 'eorchestra',
     } -> 
     file {'/home/eorchestra/election-orchestra/base_settings.py':
-        ensure  => file,        
+        ensure  => file,
         content => template('eorchestra/base_settings.py.erb'),
+        owner => 'eorchestra',
     } -> 
     file {'/srv/certs/':
         ensure  => directory,
