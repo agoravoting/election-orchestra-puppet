@@ -10,10 +10,12 @@ class verificatum {
     package { 'libgmp-dev':
         ensure=> present,
     } ->
-    file { '/vagrant/modules/verificatum/shell/setup.sh':
-        mode => 'a+x'
+    file { '/tmp/vsetup.sh':
+        ensure => file,
+        mode => 'a+x',
+        content => template('verificatum/setup.sh.erb'),
     }
-    exec { '/vagrant/modules/verificatum/shell/setup.sh':
+    exec { '/tmp/vsetup.sh':
         # FIXME
         # 'puppet:///modules/verificatum/shell/setup.sh':                  
         logoutput => true,

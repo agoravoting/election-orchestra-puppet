@@ -4,10 +4,12 @@ class eorchestra($port = '5000', $host = $ipaddress) {
     require packages
     require verificatum       
 
-    file { '/vagrant/modules/eorchestra/shell/setup.sh':
-        mode => 'a+x'
+    file { '/tmp/esetup.sh':
+        ensure  => file,
+        mode => 'a+x',
+        content => template('eorchestra/setup.sh.erb'),
     } ->
-    exec { '/vagrant/modules/eorchestra/shell/setup.sh':
+    exec { '/tmp/esetup.sh':
         # FIXME
         # 'puppet:///modules/eorchestra/setup.sh':          
         user => 'eorchestra',
