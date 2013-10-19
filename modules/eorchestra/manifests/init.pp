@@ -42,5 +42,11 @@ class eorchestra($port = '5000', $host = $ipaddress) {
         require => Package['nginx'],
         content => template('packages/nginx.conf.erb'),
         notify => Service['nginx'],
+    } ->
+    file {'/etc/supervisor/conf.d/election-orchestra.conf':
+        ensure  => file,
+        require => Package['supervisor'],
+        content => template('packages/election-orchestra.conf.erb'),
+        notify => Service['supervisor'],
     }
 }

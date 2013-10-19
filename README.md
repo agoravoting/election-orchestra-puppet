@@ -27,7 +27,7 @@ Accessing the vm
 ===========
 * vagrant ssh
 * sudo -s
-* su - eorhcestra
+* su - eorchestra
 
 Applying puppet manually inside the vm
 ===========
