@@ -26,6 +26,8 @@ Run
 Accessing the vm
 ===========
 * vagrant ssh
+* sudo -s
+* su - eorhcestra
 
 TODO
 ===========
