@@ -1,8 +1,8 @@
 # use fqdn when necessary
-class eorchestra($port = '5000', $host = $ipaddress) {
+class eorchestra($port = '5000', $host = $ipaddress, $verificatum_server_ports, $verificatum_hint_server_ports) {
     require user
     require packages
-    require verificatum       
+    require verificatum
 
     file { '/tmp/esetup.sh':
         ensure  => file,
@@ -11,7 +11,7 @@ class eorchestra($port = '5000', $host = $ipaddress) {
     } ->
     exec { '/tmp/esetup.sh':
         # FIXME
-        # 'puppet:///modules/eorchestra/setup.sh':          
+        # 'puppet:///modules/eorchestra/setup.sh':
         user => 'eorchestra',
         logoutput => true,
         creates => '/home/eorchestra/election-orchestra',
