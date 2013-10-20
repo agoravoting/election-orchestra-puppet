@@ -5,6 +5,6 @@ class packages::supervisor {
     service { 'supervisor':
         ensure     => running,
         enable     => true,
-        hasrestart => true,
+        restart => 'supervisorctl reload',
     }
 }

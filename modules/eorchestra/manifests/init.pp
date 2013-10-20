@@ -16,6 +16,7 @@ class eorchestra($port = '5000', $host = $ipaddress, $verificatum_server_ports, 
         logoutput => true,
         creates => '/home/eorchestra/election-orchestra',
         require => [Package['git'], User['eorchestra'], Python::Virtualenv['/home/eorchestra/venv']],
+        timeout => 600,
     } ->
     file {'/home/eorchestra/election-orchestra/auth.ini':
         ensure  => file,        
