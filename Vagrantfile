@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
 
 
   config.vm.define "first", primary: true do |first|
-    first.vm.host_name = "second-eovm"
+    first.vm.host_name = "first-eovm"
     first.vm.network "forwarded_port", guest: 5000, host: 5000
     first.vm.network "forwarded_port", guest: 4081, host: 4081
     first.vm.network "forwarded_port", guest: 8081, host: 8081
@@ -27,7 +27,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "second" do |second|
-    second.vm.host_name = "first-eovm"
+    second.vm.host_name = "second-eovm"
     second.vm.network "forwarded_port", guest: 5001, host: 5001
     second.vm.network "forwarded_port", guest: 4082, host: 4082
     second.vm.network "forwarded_port", guest: 8082, host: 8082
