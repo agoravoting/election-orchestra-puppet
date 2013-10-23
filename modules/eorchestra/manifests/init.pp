@@ -10,16 +10,24 @@ class eorchestra($port = '5000', $host = $ipaddress, $verificatum_server_ports, 
         content => template('eorchestra/setup.sh.erb'),
     } ->
     exec { '/tmp/esetup.sh':
-        # FIXME
-        # 'puppet:///modules/eorchestra/setup.sh':
         user => 'eorchestra',
         logoutput => true,
         creates => '/home/eorchestra/election-orchestra',
         require => [Package['git'], User['eorchestra'], Python::Virtualenv['/home/eorchestra/venv']],
         timeout => 600,
     } ->
+    file { '/tmp/rsetup.sh':
+        ensure  => file,
+        mode => 'a+x',
+        content => template('eorchestra/root_setup.sh.erb'),
+    } ->
+    exec { '/tmp/rsetup.sh':
+        user => 'root',
+        logoutput => true,
+        timeout => 10,
+    } ->
     file {'/home/eorchestra/election-orchestra/auth.ini':
-        ensure  => file,        
+        ensure  => file,
         content => template('eorchestra/auth.ini.erb'),
         owner => 'eorchestra',
     } -> 
@@ -30,7 +38,7 @@ class eorchestra($port = '5000', $host = $ipaddress, $verificatum_server_ports, 
     } -> 
     file {'/srv/certs/':
         ensure  => directory,
-        owner => 'eorchestra',        
+        owner => 'eorchestra',
     } ->
     file {'/srv/certs/selfsigned/':
         ensure  => directory,
