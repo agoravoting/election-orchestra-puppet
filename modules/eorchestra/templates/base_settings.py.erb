@@ -28,6 +28,7 @@ PUBLIC_DATA_BASE_URL = 'https://<%= @host %>:<%= @port %>/public_data'
 SSL_CERT_PATH = '%s/certs/selfsigned/cert.pem' % ROOT_PATH
 SSL_KEY_PATH = '%s/certs/selfsigned/key-nopass.pem' % ROOT_PATH
 ALLOW_ONLY_SSL_CONNECTIONS = True
+AUTOACCEPT_REQUESTS = True
 
 QUEUES_OPTIONS = {
     'verificatum_queue': {
