@@ -19,6 +19,7 @@ Vagrant.configure("2") do |config|
     first.vm.network "forwarded_port", guest: 5000, host: 5000
     first.vm.network "forwarded_port", guest: 4081, host: 4081
     first.vm.network "forwarded_port", guest: 8081, host: 8081
+    first.vm.network "private_network", ip: "192.168.50.4"
 
     first.vm.provision :puppet , :module_path => "modules" , :options => "--verbose" do |puppet|
         puppet.manifests_path = "manifests"
@@ -31,6 +32,7 @@ Vagrant.configure("2") do |config|
     second.vm.network "forwarded_port", guest: 5001, host: 5001
     second.vm.network "forwarded_port", guest: 4082, host: 4082
     second.vm.network "forwarded_port", guest: 8082, host: 8082
+    second.vm.network "private_network", ip: "192.168.50.5"
 
     second.vm.provision :puppet , :module_path => "modules" , :options => "--verbose" do |puppet|
         puppet.manifests_path = "manifests"
