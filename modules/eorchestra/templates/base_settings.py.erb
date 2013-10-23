@@ -6,14 +6,14 @@ ROOT_URL = 'https://<%= @host %>:<%= @port %>/api/queues'
 # URL to our HTTP server
 VERIFICATUM_SERVER_URL = 'http://<%= @host %>'
 
-VERIFICATUM_SERVER_PORT_RANGE = <%= verificatum_server_ports %>
+VERIFICATUM_SERVER_PORT_RANGE = <%= @verificatum_server_ports %>
 
 # Socket address given as <hostname>:<port> to our hint server.
 # A hint server is a simple UDP server that reduces latency and
 # traffic on the HTTP servers.
 VERIFICATUM_HINT_SERVER_SOCKET = '<%= @host %>'
 
-VERIFICATUM_HINT_SERVER_PORT_RANGE = <%= verificatum_hint_server_ports %>
+VERIFICATUM_HINT_SERVER_PORT_RANGE = <%= @verificatum_hint_server_ports %>
 
 import os
 ROOT_PATH = os.path.split(os.path.abspath(__file__))[0]
