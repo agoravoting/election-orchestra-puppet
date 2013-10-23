@@ -35,10 +35,26 @@ class eorchestra($port = '5000', $host = $ipaddress, $verificatum_server_ports, 
         ensure  => file,
         content => template('eorchestra/base_settings.py.erb'),
         owner => 'eorchestra',
-    } -> 
+    } ->
+    file {'/srv/election-orchestra/':
+        ensure  => directory,
+        owner => 'eorchestra',
+        group => 'users',
+    } ->
+    file {'/srv/election-orchestra/server1/':
+        ensure  => directory,
+        owner => 'eorchestra',
+        group => 'users',
+    } ->
+    file {'/srv/election-orchestra/server1/public/':
+        ensure  => directory,
+        owner => 'eorchestra',
+        group => 'users',
+    } ->
     file {'/srv/certs/':
         ensure  => directory,
         owner => 'eorchestra',
+        group => 'users'
     } ->
     file {'/srv/certs/selfsigned/':
         ensure  => directory,
