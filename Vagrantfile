@@ -36,6 +36,7 @@ Vagrant.configure("2") do |config|
             aws.security_groups = [ENV["AWS_SECURITY_GROUP"]]
             aws.region = "eu-west-1"
             aws.ami = "ami-4c9b7d3b"
+            aws.instance_type = "c1.medium"
             aws.tags = {
                 Name: 'Vagrant AWS Election-orchestra'
             }
