@@ -8,12 +8,15 @@ class packages::py {
         gunicorn   => false,
         pip        => true
     } ->
+    file {'/tmp/requirements.txt':
+        ensure  => file,
+        content => template('packages/requirements.txt.erb'),
+        owner => 'eorchestra'
+    } ->
     python::virtualenv { '/home/eorchestra/venv':
         ensure       => present,
-        version      => 'system',
-        # FIXME
-        requirements => '/vagrant/modules/packages/requirements.txt',        
-        #requirements => 'puppet:///modules/packages/requirements.txt',
+        version      => 'system',        
+        requirements => '/tmp/requirements.txt',                
         systempkgs   => true,
         distribute   => false,
         owner        => 'eorchestra',

@@ -11,6 +11,7 @@ sudo apt-get -y install python-software-properties htop
 # java
 # http://www.webupd8.org/2012/01/install-oracle-java-jdk-7-in-ubuntu-via.html
 add-apt-repository -y ppa:webupd8team/java
+sudo apt-get -y install aptitude
 
 wget -qO /tmp/puppetlabs-release-precise.deb https://apt.puppetlabs.com/puppetlabs-release-precise.deb
 
