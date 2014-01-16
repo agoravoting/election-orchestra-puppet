@@ -38,7 +38,8 @@ http {
         server_name <%= scope.lookupvar('eorchestra::host') %>;
 
         add_header Strict-Transport-Security max-age=31536000;
-        ssl_verify_client optional_no_ca;
+        ssl_verify_client on;
+        ssl_client_certificate /srv/certs/selfsigned/calist;
         ssl_certificate /srv/certs/selfsigned/cert.pem;
         ssl_certificate_key /srv/certs/selfsigned/key-nopass.pem;
 
@@ -71,6 +72,5 @@ http {
             uwsgi_param X-Scheme $scheme;
             uwsgi_param X-Sender-SSL-Certificate $ssl_client_cert;
         }
-                
-    } 
+    }
 }
