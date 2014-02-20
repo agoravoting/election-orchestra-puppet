@@ -40,4 +40,7 @@ Standalone installation (no vagrant)
 * git clone https://github.com/agoraciudadana/election-orchestra-puppet.git
 * cd election-orchestra-puppet
 * sudo shell/apt.sh
+* cd modules
+* git clone git://github.com/stankevich/puppet-python.git python
+* cd ..
 * sudo puppet apply manifests/init.pp --modulepath modules/

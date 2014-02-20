@@ -21,6 +21,9 @@ Vagrant.configure("2") do |config|
             v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
             v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
         end
+
+        # for development setup
+        # config.vm.network "private_network", ip: "192.168.50.2"
     else
         config.vm.box = "dummy"
         config.vm.box_url = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
