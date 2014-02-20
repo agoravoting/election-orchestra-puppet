@@ -1,9 +1,7 @@
 [program:eorchestra]
-command=/home/eorchestra/venv/bin/uwsgi --ini /home/eorchestra/election-orchestra/auth.ini
+command=/home/eorchestra/launch.sh
 directory=/home/eorchestra/election-orchestra/
 autostart=true
 autorestart=true
 user=eorchestra
-environment=PATH="/home/eorchestra/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 redirect_stderr=true
-environment='FRESTQ_SETTINGS'="base_settings.py"
