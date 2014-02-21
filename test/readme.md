@@ -3,28 +3,29 @@ Setup
 
 The easiest set up is one git clone of election-orchestra-puppet per authority targeting different folders on the host machine. 
 
-* Follow the instructions in election-orchestra-puppet readme for vagrant install, then 
-for each authority (for n = 2 upwards after the first authority)
+* Follow the instructions in election-orchestra-puppet readme for vagrant install
 
-* Vagrantfile
+* Vagrantfile (for each authority)
 
     * config.vm.host_name = "agoravoting-eovm+n"
 
     * comment the port redirections:
 
-    config.vm.network "forwarded_port", guest: 5000+n, host: 5000+n
-    config.vm.network "forwarded_port", guest: 4081+n, host: 4081+n
-    config.vm.network "forwarded_port", guest: 8081+n, host: 8081+n
+        config.vm.network "forwarded_port", guest: 5000+n, host: 5000+n
+        
+        config.vm.network "forwarded_port", guest: 4081+n, host: 4081+n
+        
+        config.vm.network "forwarded_port", guest: 8081+n, host: 8081+n
 
     * uncomment the private network line:
 
-    config.vm.network "private_network", ip: "192.168.50.2+n"    
+        config.vm.network "private_network", ip: "192.168.50.2+n"    
 
     * manifests/init.pp:
 
-    host => 'agoravoting-eovm+n'
+        host => 'agoravoting-eovm+n'
 
-    If you forget to make these changes before vagrant up you can use vagrant reload to alter the configuration
+        If you forget to make these changes before vagrant up you can use vagrant reload to alter the configuration
 
 * vagrant up
 
