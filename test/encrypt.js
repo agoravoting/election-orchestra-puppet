@@ -1,10 +1,9 @@
 var fs = require('fs');
 
+// otherwise one of the scripts complains
 var navigator = {
   "appName": "foo"
 };
-
-
 
 filedata = fs.readFileSync('agora-ciudadana/agora_site/static/js/agora/libs/crypto/jsbn.js','utf8');
 eval(filedata);
@@ -33,7 +32,6 @@ filedata = fs.readFileSync('agora-ciudadana/agora_site/static/js/libs/json2.js',
 eval(filedata);
 
 var sjcl = require('./agora-ciudadana/agora_site/static/js/agora/libs/crypto/sjcl.js');
-
 var moment = require('./agora-ciudadana/agora_site/static/js/libs/moment.js');
 
 // FIXME copied from voting_booth.js as it is a hassle to import the whole agora view structure
