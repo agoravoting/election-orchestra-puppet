@@ -13,11 +13,11 @@ Vagrantfile
 
 config.vm.host_name = "agoravoting-eovm+n"
 
-* comment the ports:
+* comment the port redirections:
 
-#config.vm.network "forwarded_port", guest: 5000+n, host: 5000+n
-#config.vm.network "forwarded_port", guest: 4081+n, host: 4081+n
-#config.vm.network "forwarded_port", guest: 8081+n, host: 8081+n
+config.vm.network "forwarded_port", guest: 5000+n, host: 5000+n
+config.vm.network "forwarded_port", guest: 4081+n, host: 4081+n
+config.vm.network "forwarded_port", guest: 8081+n, host: 8081+n
 
 * uncomment the private network line:
 
