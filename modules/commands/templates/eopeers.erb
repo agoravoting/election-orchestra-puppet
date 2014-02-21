@@ -1,0 +1,159 @@
+#!/usr/bin/env python
+
+import argparse
+import os
+import json
+import subprocess
+
+peerlist = "/etc/eopeers"
+
+parser = argparse.ArgumentParser(prog='eopeers')
+parser.add_argument("--list", help="list installed peer packages by hostname", action="store_true")
+parser.add_argument('--install', nargs='+', help='install a peer package')
+parser.add_argument('--uninstall', nargs='+', help='uninstall peer package(s) by hostname')
+parser.add_argument('--show-mine', help='show our peer package', action="store_true")
+
+pargs = parser.parse_args()
+
+def install(peerlist, path):
+    '''
+    install the peer package by path
+    '''
+    if not os.path.exists(peerlist):
+        os.mkdir(peerlist)
+
+    if not os.path.isfile(path):
+        print("Could not read file: %s" % path)
+        exit(1)
+    try:
+        with open(path, 'r') as f:
+            el_json = json.loads(f.read())
+        for key in ['ssl_certificate', 'ip_address', 'hostname']:
+            if (key not in el_json.keys()) or not isinstance(el_json[key], basestring):
+                print("invalid format package: %s" % path)
+                exit(1)
+    except:
+        print("error loading file: %s" % path)
+        import traceback
+        traceback.print_exc()
+        exit(1)
+
+    # check it's not already installed
+    bname = el_json['hostname']
+    if os.path.exists(os.path.join(peerlist, bname)):
+        print("package for hostname %s already installed" % bname)
+        exit(1)
+
+    # add to hosts if needed
+    with open("/etc/hosts", "r") as f:
+        hosts_data = f.read()
+    hostline = "\n%s %s" % (el_json['ip_address'], el_json["hostname"])
+    if hostline not in hosts_data:
+        subprocess.call("echo '%s' >> /etc/hosts" % hostline, shell=True)
+
+    # add to ssl certs
+    with open("/srv/certs/selfsigned/calist", "r") as f:
+        calist_data = f.read().strip()
+    if el_json["ssl_certificate"] not in calist_data:
+        subprocess.call("echo '\n%s' >> /srv/certs/selfsigned/calist" %
+            el_json["ssl_certificate"], shell=True)
+
+    # save peer package
+    path = os.path.join(peerlist, el_json['hostname'] + ".package")
+    with open(path, 'w') as f:
+        f.write(json.dumps(el_json))
+
+def uninstall(peerlist, hostname):
+    '''
+    uninstall the peer package by hostname
+    '''
+    # check it's not already installed
+    path = os.path.join(peerlist, hostname + ".package")
+    if not os.path.exists(path):
+        print("package for hostname %s is not installed" % hostname)
+        exit(1)
+    try:
+        with open(path, 'r') as f:
+            el_json = json.loads(f.read())
+        for key in ['ssl_certificate', 'ip_address', 'hostname']:
+            if (key not in el_json.keys()) or not isinstance(el_json[key], basestring):
+                print("invalid format package: %s" % path)
+                exit(1)
+    except:
+        print("error loading file: %s" % path)
+        import traceback
+        traceback.print_exc()
+        exit(1)
+
+    # remove hostname from hosts
+    with open('/etc/hosts', 'r') as f:
+        data = f.read()
+    hostline = "\n%s %s" % (el_json['ip_address'], el_json["hostname"])
+    data = data.replace(hostline, "")
+    with open('/etc/hosts', 'w') as f:
+        f.write(data)
+
+    # remove from ssl certs
+    with open('/srv/certs/selfsigned/calist', 'r') as f:
+        data = f.read()
+    data = data.replace(el_json["ssl_certificate"], "")
+    with open('/srv/certs/selfsigned/calist', 'w') as f:
+        f.write(data)
+
+    # finally remove the package
+    os.unlink(path)
+
+def showmine():
+    '''
+    install the peer package by path
+    '''
+    with open('/srv/certs/selfsigned/cert.pem', 'r') as f:
+        ssl_certificate =  f.read()
+    us = {
+        "ssl_certificate": ssl_certificate,
+        "ip_address": "<%= @ipaddress %>",
+        "hostname": "<%= @host %>"
+    }
+    print(json.dumps(us))
+
+def listall(peerlist):
+    '''
+    return a list of peer packagers loaded in json
+    '''
+    if not os.path.isdir(peerlist):
+        return []
+
+    l = os.listdir(peerlist)
+    if len(l) == 0:
+        return []
+
+    ret = []
+    for el in l:
+        path = os.path.join(peerlist, el)
+        try:
+            with open(path, 'r') as f:
+                ret.append(json.loads(f.read()))
+        except:
+            print("error loading: %s" % el)
+            import traceback
+            traceback.print_exc()
+            exit(1)
+    return ret
+
+if pargs.list:
+    l = listall(peerlist)
+    if len(l) == 0:
+        print("No peer package installed.")
+        exit(0)
+    print("Packages in %s:" % peerlist)
+    for el in l:
+        print(" * %s" % el['hostname'])
+
+elif pargs.install:
+    for path in pargs.install:
+        install(peerlist, path)
+elif pargs.uninstall:
+    for path in pargs.uninstall:
+        uninstall(peerlist, path)
+elif pargs.show_mine:
+    showmine()

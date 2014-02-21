@@ -1,6 +1,7 @@
 # use fqdn when necessary
-class eorchestra($port = '5000', $host = $ipaddress, $verificatum_server_ports, $verificatum_hint_server_ports) {
+class eorchestra($port = '5000', $host, $verificatum_server_ports, $verificatum_hint_server_ports, $backup_password, $ipaddress) {
     require user
+    require commands
     require packages
     require verificatum
 
@@ -20,6 +21,11 @@ class eorchestra($port = '5000', $host = $ipaddress, $verificatum_server_ports, 
         ensure  => file,
         mode => 'a+x',
         content => template('eorchestra/root_setup.sh.erb'),
+    } ->
+    file { '/etc/hostname':
+        ensure  => file,
+        mode => 'a+x',
+        content => template('eorchestra/hostname.erb'),
     } ->
     exec { '/tmp/rsetup.sh':
         user => 'root',
