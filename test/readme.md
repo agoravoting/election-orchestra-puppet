@@ -61,7 +61,7 @@ The easiest set up is one git clone of election-orchestra-puppet per authority t
 
     VERIFICATUM_HINT_SERVER_SOCKET = '192.168.50.2'
 
-* restart nginx and eorhcestra on each authority 
+* restart nginx and eorchestra on each authority 
 
     sudo /etc/init.d/nginx restart
 
@@ -93,14 +93,14 @@ The easiest set up is one git clone of election-orchestra-puppet per authority t
 Troubleshooting
 ========
 
-* Invalid socket address: probably means there is an old instance of verificatum running. Kill it and try again
+* Invalid socket address: probably means there is an old instance of verificatum running. Running
+
+    sudo supervisorctl restart eorchestra
+
+    should kill these processes
 
 * Verificatum hangs: did you forget to use ip’s instead of hostnames in the base_settings.py?
 
     if so, change the file and restart eorchestra
 
     sudo supervisorctl restart eorchestra
-
-
-
-
