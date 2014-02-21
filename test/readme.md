@@ -11,11 +11,11 @@ The easiest set up is one git clone of election-orchestra-puppet per authority t
 
     * comment the port redirections:
 
-        config.vm.network "forwarded_port", guest: 5000+n, host: 5000+n
+        config.vm.network "forwarded_port", guest: 5000, host: 5000
         
-        config.vm.network "forwarded_port", guest: 4081+n, host: 4081+n
+        config.vm.network "forwarded_port", guest: 4081, host: 4081
         
-        config.vm.network "forwarded_port", guest: 8081+n, host: 8081+n
+        config.vm.network "forwarded_port", guest: 8081, host: 8081
 
     * uncomment the private network line:
 
@@ -79,7 +79,7 @@ The easiest set up is one git clone of election-orchestra-puppet per authority t
 
 * Set up eo_test.py
 
-    * Copy the certificates into the ssl_cert json fields in the startUrl variable in eo_test.py
+    * Copy the certificates into the ssl_cert json fields in the authoritiesData variable in eo_test.py
 
     * Activate the virtual environment
 
