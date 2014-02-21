@@ -25,9 +25,10 @@ import os.path
 
 
 PK_TIMEOUT = 300
-TALLY_TIMEOUT = 300
+TALLY_TIMEOUT = 1000
 CERT = '/srv/certs/selfsigned/cert.pem'
 KEY = '/srv/certs/selfsigned/key-nopass.pem'
+DATA_DIR = "data"
 
 # thread signalling
 cv = threading.Condition()
@@ -69,7 +70,7 @@ def hash_file(file_path):
     path.
     '''
     hash = hashlib.sha512()
-    f = open(file_path, 'r')
+    f = open(os.path.join(DATA_DIR, file_path), 'r')
     for chunk in f.read(BUF_SIZE):
         hash.update(chunk)
     f.close()
@@ -103,7 +104,7 @@ def writeVotes(votesData, fileName):
         votes.append(data)
 
     # tasks/election.py:launch_encrypted_tally    
-    with codecs.open(fileName, encoding='utf-8', mode='w+') as votes_file:
+    with codecs.open(os.path.join(DATA_DIR, fileName), encoding='utf-8', mode='w+') as votes_file:
         for vote in votes:
             # votes_file.write(json.dumps(vote['data'], sort_keys=True) + "\n")
             votes_file.write(json.dumps(vote, sort_keys=True) + "\n")
@@ -171,7 +172,7 @@ def waitForTally():
 def downloadTally(url, electionId):
     fileName = electionId + '.tar.gz' 
     print("> Downloading to " + fileName)
-    with open(fileName, 'wb') as handle:
+    with open(os.path.join(DATA_DIR, fileName), 'wb') as handle:
         request = requests.get(url, stream=True, verify=False, cert=(CERT, KEY))
 
         for block in request.iter_content(1024):
@@ -189,7 +190,7 @@ tallyData = {
     # 'election_id': electionId,
     "callback_url": "http://" + localServer + ":" + str(localPort) + "/receive_tally",
     "extra": [],
-    "votes_url": "http://" + localServer + ":" + str(localPort) + "/",
+    "votes_url": "http://" + localServer + ":" + str(localPort) + "/" + DATA_DIR + "/",
     "votes_hash": "sha512://"
 }
 startUrl = 'https://agoravoting-eovm:5000/public_api/election'
@@ -317,7 +318,7 @@ def create(args):
 
     if(len(publicKey) > 0):            
         print("> Saving pk to " + pkFile)
-        with codecs.open(pkFile, encoding='utf-8', mode='w+') as votes_file:
+        with codecs.open(os.path.join(DATA_DIR, pkFile), encoding='utf-8', mode='w+') as votes_file:
             votes_file.write(json.dumps(publicKey))
     else:
         print("No public key, exiting..")
@@ -331,10 +332,12 @@ def encrypt(args):
     votesFile = args.vfile
     votesCount = args.vcount
     print("> Encrypting votes (" + votesFile + ", pk = " + pkFile + ", " + str(votesCount) + ")..")
-    if(os.path.isfile(pkFile)) and (os.path.isfile(votesFile)):        
-        output, error = subprocess.Popen([node, "encrypt.js", pkFile, votesFile, str(votesCount)], stdout = subprocess.PIPE).communicate()
+    pkPath = os.path.join(DATA_DIR, pkFile)
+    votesPath = os.path.join(DATA_DIR, votesFile)
+    if(os.path.isfile(pkPath)) and (os.path.isfile(votesPath)):
+        output, error = subprocess.Popen([node, "encrypt.js", pkPath, votesPath, str(votesCount)], stdout = subprocess.PIPE).communicate()
 
-        print("> Nodejs output is " + output)
+        print("> Received Nodejs output (" + str(len(output)) + ")")
         parsed = json.loads(output)
         
         ctexts = 'ctexts' + electionId
@@ -368,13 +371,16 @@ def full(args):
 
     pkFile = create(args)
     
-    if(os.path.isfile(pkFile)):        
+    if(os.path.isfile(os.path.join(DATA_DIR, pkFile))):
         encrypt(args)            
         tally(args)        
     else:
         print("No public key, exiting..")
 
 def main(argv):
+    if not (os.path.isdir(DATA_DIR)):
+        print("> Creating data directory")
+        os.makedirs(DATA_DIR)
     parser = argparse.ArgumentParser(description='EO testing script', formatter_class=RawTextHelpFormatter)
     parser.add_argument('command', nargs='+', default='full', help='''create: creates an election
 encrypt <electionId>: encrypts votes 

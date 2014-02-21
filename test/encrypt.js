@@ -57,6 +57,15 @@ var encryptAnswer = function(pk_json, plain_answer) {
     return enc_answer;
 }
 
+var updateTally = function(tally, vote) {
+    if(!(vote in tally)) {
+        tally[vote] = 1;
+    }
+    else {
+        tally[vote] = tally[vote] + 1;
+    }
+}
+
 if(process.argv.length < 4) {
     console.error("* Node: Need public key and votes.json file args to encrypt votes");
     process.exit(1);
@@ -68,6 +77,8 @@ else {
         var pkStr = fs.readFileSync(process.argv[2], 'utf8');
         var pk = JSON.parse(pkStr);
 
+        var tally = {};
+
         // voting_booth.js:castVote
         var ballots = [];
         var answersStr = fs.readFileSync(process.argv[3], 'utf8');
@@ -75,6 +86,7 @@ else {
 
         for(var i = 0; i < answers.length; i++) {
             var answer = [answers[i]];
+            updateTally(tally, answers[i]);
             console.warn('> Node: encrypting answer ' + answer);
             ballot = {
               'is_vote_secret': true,
@@ -95,13 +107,15 @@ else {
                 console.warn('> Node: duplicating votes to reach ' + totalVotes);
                 for(var i = answers.length; i < totalVotes; i++) {                
                     var nextVote = Math.floor((Math.random()*answers.length));
-                    console.warn('> Node: duplicating ' + answers[nextVote]);
+                    // console.warn('> Node: duplicating ' + answers[nextVote]);
+                    updateTally(tally, answers[nextVote]);
                     ballots.push(ballots[nextVote]);
                 }
             }
         }
         var serialized = JSON.stringifyCompat(ballots)
         console.warn('> Node: outputting votes..');
+        console.warn('> Node: tally = ' + JSON.stringifyCompat(tally));
         console.log(serialized);
     }
     catch(err) {
