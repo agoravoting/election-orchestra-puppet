@@ -7,11 +7,11 @@ echo 'deb http://nginx.org/packages/ubuntu/ precise nginx' >> /etc/apt/sources.l
 echo 'deb-src http://nginx.org/packages/ubuntu/ precise nginx' >> /etc/apt/sources.list
 apt-get update
 # http://stackoverflow.com/questions/13018626/add-apt-repository-not-found
-sudo apt-get -y install python-software-properties htop
+apt-get -y install python-software-properties htop sudo aptitude
 # java
 # http://www.webupd8.org/2012/01/install-oracle-java-jdk-7-in-ubuntu-via.html
 add-apt-repository -y ppa:webupd8team/java
-sudo apt-get -y install aptitude
+apt-get -y install aptitude
 
 wget -qO /tmp/puppetlabs-release-precise.deb https://apt.puppetlabs.com/puppetlabs-release-precise.deb
 
