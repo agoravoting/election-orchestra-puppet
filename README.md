@@ -61,7 +61,7 @@ The basic configuration of your authority will be in election-orchestra-puppet/m
 
 ## Finish installation
 
-* sudo shell/apt.sh
+* sudo sh shell/apt.sh
 * sudo puppet apply manifests/init.pp --modulepath modules/
 
 

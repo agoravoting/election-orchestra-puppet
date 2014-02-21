@@ -42,6 +42,12 @@ class eorchestra($port = '5000', $host, $verificatum_server_ports, $verificatum_
         content => template('eorchestra/base_settings.py.erb'),
         owner => 'eorchestra',
     } ->
+    file {'/home/eorchestra/launch.sh':
+        ensure  => file,
+        mode => 'a+x',
+        content => template('eorchestra/launch.sh.erb'),
+        owner => 'eorchestra',
+    } ->
     file {'/srv/election-orchestra/':
         ensure  => directory,
         owner => 'eorchestra',
