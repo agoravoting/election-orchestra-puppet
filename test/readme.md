@@ -83,5 +83,17 @@ sudo supervisorctl restart eorchestra
 source venv/bin/activate in the /home/eorchestra
  
 
+ Troubleshooting
+ ===============
+
+ * Invalid socket address: probably means there is an old instance of verificatum running. Kill it and try again
+
+* Verificatum hangs: did you forget to use ip’s instead of hostnames in the base_settings.py?
+
+if so, change the file and restart eorchestra
+
+sudo supervisorctl restart eorchestra
+
+
 
 
