@@ -1,0 +1,28 @@
+#!/bin/bash
+
+if [ "$(whoami)" != "root" ]
+then
+    echo "You need to run this as root"
+fi
+
+EORCHESTRA_DIR=/home/eorchestra
+VENV_DIR=$EORCHESTRA_DIR/venv
+
+cd $EORCHESTRA_DIR
+source $VENV_DIR/bin/activate
+cd election-orchestra
+export FRESTQ_SETTINGS="base_settings.py"
+
+if [ "$1" == "list" ]
+then
+    python app.py --tasks --filters "task_type=external" "status=executing" 2>/dev/null
+elif [ "$1" == 'show' ]
+then
+    python app.py --show-external '$2' 2>/dev/null
+elif [ "$1" == 'approve' ]
+then
+    python app.py --finish '$2' '{"status": "accepted"}' 2>/dev/null
+elif [ "$1" == 'deny' ]
+then
+    python app.py --finish '$2' '{"status": "denied"}' 2>/dev/null
+fi

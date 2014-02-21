@@ -22,5 +22,29 @@ class commands() {
         ensure  => file,
         mode    => 'a+x',
         content => template('commands/eopeers.erb'),
+    } ->
+
+    file { '/usr/bin/reset-tally':
+        ensure  => file,
+        mode    => 'a+x',
+        content => template('commands/reset-tally.erb'),
+    } ->
+
+    file { '/usr/bin/eolog':
+        ensure  => file,
+        mode    => 'a+x',
+        content => template('commands/eolog.erb'),
+    } ->
+
+    file { '/usr/bin/eoauto':
+        ensure  => file,
+        mode    => 'a+x',
+        content => template('commands/eoauto.erb'),
+    } ->
+
+    file { '/usr/bin/eotasks':
+        ensure  => file,
+        mode    => 'a+x',
+        content => template('commands/eotasks.erb'),
     }
 }

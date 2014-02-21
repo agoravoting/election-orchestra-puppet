@@ -1,5 +1,5 @@
 # use fqdn when necessary
-class eorchestra($port = '5000', $host, $verificatum_server_ports, $verificatum_hint_server_ports, $backup_password, $ipaddress) {
+class eorchestra($port = '5000', $host, $verificatum_server_ports, $verificatum_hint_server_ports, $backup_password, $ipaddress, $auto_mode) {
     require user
     require commands
     require packages

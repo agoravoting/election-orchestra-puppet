@@ -127,5 +127,41 @@ To create a new backup in /backups dir, just execute the following command:
 
 To restore a backup, do something like for example (you need to change the path of the backup):
 
-* sudo restore_backup.sh
+* sudo restore_backup.sh <path/to/backup>
+
+## Update installation
+
+Sometimes you might need to update the system. You will probably have to download first the last updates from the election-orchestra-puppet directory with "git pull".
+
+After that, what you will have to do is to create a backup (as explained previously), copy your backup somewhere safe, and then create a fresh election-orchestra-puppet installation and then restore there your backup.
+
+## Reset a tally
+
+Sometimes there's some kind of problem with a tally, and you need to launch it again. In that case, you need to reset it frist. You can either list the tallied election starting with the last one:
+
+* sudo reset-tally
+
+And reset a tally of an election by election-id:
+
+* sudo reset-tally <election-id>
+
+## Automatic/manual modes
+
+There are two mode for working in election-orchestra: automatic and manual. This has to do with the election-orchestra requests from other peers, which are of two types: either create election public keys, or perform a tally.
+
+The automatic mode accepts requests from allowed peers without requesting a confirmation from the authority administrator. Automatic mode is good for testing and also for public election authorities.
+
+Manual mode needs the confirmation from the election authority administrator. This is good for improved security, for example to be able to confirm by other means that the tally request is legit, or to check the request data itself. It's useful for important elections.
+
+Note that the default mode in a deployment is automatic, and this can be changed in manifests/init.pp with the variable "auto_mode". You can also check its value with:
+
+* eoauto
+Autoaccepting requests is set to TRUE
+
+Or change it:
+
+* eoauto true
+Autoaccepting requests set to TRUE. Restarting eorchestra..
+
+But the best way to do it is change it in manifests/init.pp and then executing puppet again (and restarting eorchestra with "supervisorctl restart eorchestra").
 
