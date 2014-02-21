@@ -24,8 +24,8 @@ import traceback
 import os.path
 
 
-PK_TIMEOUT = 40
-TALLY_TIMEOUT = 40
+PK_TIMEOUT = 300
+TALLY_TIMEOUT = 300
 CERT = '/srv/certs/selfsigned/cert.pem'
 KEY = '/srv/certs/selfsigned/key-nopass.pem'
 
@@ -193,31 +193,7 @@ tallyData = {
     "votes_hash": "sha512://"
 }
 startUrl = 'https://agoravoting-eovm:5000/public_api/election'
-startData = {
-    # "election_id": electionId,
-    "is_recurring": False,
-    "callback_url": "http://" + localServer + ":" + str(localPort) + "/key_done",
-    "extra": [],
-    "title": "Test election",
-    "url": "https://example.com/election/url",
-    "description": "election description",
-    "questions_data": [{
-        "question": "Who Should be President?",
-        "tally_type": "ONE_CHOICE",
-        # "answers": ["Alice", "Bob"],
-        "answers": [
-            {'a': 'ballot/answer',
-            'details': '',
-            'value': 'Alice'},
-            {'a': 'ballot/answer',
-            'details': '',
-            'value': 'Bob'}
-        ], 
-        "max": 1, "min": 0
-    }],
-    "voting_start_date": "2013-12-06T18:17:14.457000",
-    "voting_end_date": "2013-12-09T18:17:14.457000",
-    "authorities": [
+authoritiesData = [
         {
             "name": "Auth1",
             "orchestra_url": "https://agoravoting-eovm:5000/api/queues",
@@ -299,6 +275,32 @@ hcxIp9g=
 -----END CERTIFICATE-----"""
         }
     ]
+
+startData = {
+    # "election_id": electionId,
+    "is_recurring": False,
+    "callback_url": "http://" + localServer + ":" + str(localPort) + "/key_done",
+    "extra": [],
+    "title": "Test election",
+    "url": "https://example.com/election/url",
+    "description": "election description",
+    "questions_data": [{
+        "question": "Who Should be President?",
+        "tally_type": "ONE_CHOICE",
+        # "answers": ["Alice", "Bob"],
+        "answers": [
+            {'a': 'ballot/answer',
+            'details': '',
+            'value': 'Alice'},
+            {'a': 'ballot/answer',
+            'details': '',
+            'value': 'Bob'}
+        ], 
+        "max": 1, "min": 0
+    }],
+    "voting_start_date": "2013-12-06T18:17:14.457000",
+    "voting_end_date": "2013-12-09T18:17:14.457000",
+    "authorities": authoritiesData 
 }
 
 
@@ -326,10 +328,11 @@ def create(args):
 def encrypt(args):
     electionId = args.electionId
     pkFile = 'pk' + electionId    
-    votesFile = args.votes
-    print("> Encrypting votes (" + votesFile + ", pk = " + pkFile + ")..")
+    votesFile = args.vfile
+    votesCount = args.vcount
+    print("> Encrypting votes (" + votesFile + ", pk = " + pkFile + ", " + str(votesCount) + ")..")
     if(os.path.isfile(pkFile)) and (os.path.isfile(votesFile)):        
-        output, error = subprocess.Popen([node, "encrypt.js", pkFile, votesFile], stdout = subprocess.PIPE).communicate()
+        output, error = subprocess.Popen([node, "encrypt.js", pkFile, votesFile, str(votesCount)], stdout = subprocess.PIPE).communicate()
 
         print("> Nodejs output is " + output)
         parsed = json.loads(output)
@@ -377,7 +380,8 @@ def main(argv):
 encrypt <electionId>: encrypts votes 
 tally <electionId>: launches tally
 full: does the whole process''')
-    parser.add_argument('--votes', help='json file to read votes from', default = 'votes.json')
+    parser.add_argument('--vfile', help='json file to read votes from', default = 'votes.json')
+    parser.add_argument('--vcount', help='number of votes to generate (generates duplicates if more than in json file)', type=int, default = 0)
     args = parser.parse_args()
     command = args.command[0]
     if hasattr(__main__, command):

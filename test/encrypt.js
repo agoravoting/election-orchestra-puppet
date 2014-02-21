@@ -57,7 +57,7 @@ var encryptAnswer = function(pk_json, plain_answer) {
     return enc_answer;
 }
 
-if(process.argv.length != 4) {
+if(process.argv.length < 4) {
     console.error("* Node: Need public key and votes.json file args to encrypt votes");
     process.exit(1);
 }
@@ -89,6 +89,17 @@ else {
             ballots.push(ballot);
         }
 
+        if(process.argv.length == 5) {
+            var totalVotes = process.argv[4];
+            if(totalVotes > answers.length) {
+                console.warn('> Node: duplicating votes to reach ' + totalVotes);
+                for(var i = answers.length; i < totalVotes; i++) {                
+                    var nextVote = Math.floor((Math.random()*answers.length));
+                    console.warn('> Node: duplicating ' + answers[nextVote]);
+                    ballots.push(ballots[nextVote]);
+                }
+            }
+        }
         var serialized = JSON.stringifyCompat(ballots)
         console.warn('> Node: outputting votes..');
         console.log(serialized);
