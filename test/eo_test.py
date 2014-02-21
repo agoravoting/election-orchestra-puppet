@@ -340,6 +340,9 @@ def encrypt(args):
     print("> Encrypting votes (" + votesFile + ", pk = " + pkFile + ", " + str(votesCount) + ")..")
     pkPath = os.path.join(DATA_DIR, pkFile)
     votesPath = os.path.join(DATA_DIR, votesFile)
+    # if not present in data dir, use current directory
+    if not (os.path.isfile(votesPath)):
+        votesPath = votesFile
     if(os.path.isfile(pkPath)) and (os.path.isfile(votesPath)):
         output, error = subprocess.Popen([node, "encrypt.js", pkPath, votesPath, str(votesCount)], stdout = subprocess.PIPE).communicate()
 

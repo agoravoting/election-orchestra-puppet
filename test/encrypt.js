@@ -87,7 +87,7 @@ else {
         for(var i = 0; i < answers.length; i++) {
             var answer = [answers[i]];
             updateTally(tally, answers[i]);
-            console.warn('> Node: encrypting answer ' + answer);
+            console.warn('> Node: encrypting answer \'' + answer + '\'');
             ballot = {
               'is_vote_secret': true,
               'action': 'vote'
@@ -114,8 +114,8 @@ else {
             }
         }
         var serialized = JSON.stringifyCompat(ballots)
-        console.warn('> Node: outputting votes..');
         console.warn('> Node: tally = ' + JSON.stringifyCompat(tally));
+        console.warn('> Node: outputting votes..');        
         console.log(serialized);
     }
     catch(err) {
