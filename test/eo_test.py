@@ -1,6 +1,6 @@
 import requests
 import json
-from time import time
+import time
 
 import BaseHTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
@@ -129,13 +129,15 @@ def startElection(electionId, url, data):
     print("> " + str(r))
 
 def waitForPublicKey():
+    start = time.time()
     cv.acquire()
-    cv.wait(PK_TIMEOUT)
+    cv.wait(PK_TIMEOUT)   
     pk = ''
     if(cv.done):
+        diff = time.time() - start
         try:
             pk = cv.data['session_data'][0]['pubkey']
-            print("> Election created, public key is")
+            print("> Election created (" + str(diff) + " sec), public key is")
             print(pk)            
         except:
             print("* Could not retrieve public key " + str(cv.data))
@@ -150,17 +152,21 @@ def doTally(electionId, url, data, votesFile, hash):
     data['votes_url'] = data['votes_url'] + votesFile
     data['votes_hash'] = data['votes_hash'] + hash
     data['election_id'] = electionId
-    print("> Tally post with " + json.dumps(data))
+    # print("> Tally post with " + json.dumps(data))
+    print("> Requesting tally..")
     cv.done = False
     r = requests.post(url, data=json.dumps(data), verify=False, cert=(CERT, KEY))
     print("> " + str(r))
 
 def waitForTally():
+    start = time.time()
     cv.acquire()
     cv.wait(TALLY_TIMEOUT)    
     ret = ''
     if(cv.done):
-        print("> Received data " + str(cv.data))
+        diff = time.time() - start
+        # print("> Received tally data (" + str(diff) + " sec) " + str(cv.data))
+        print("> Received tally data (" + str(diff) + " sec)")
         if('tally_url' in cv.data['data']):
             ret = cv.data['data']            
     else:
@@ -337,7 +343,7 @@ def encrypt(args):
     if(os.path.isfile(pkPath)) and (os.path.isfile(votesPath)):
         output, error = subprocess.Popen([node, "encrypt.js", pkPath, votesPath, str(votesCount)], stdout = subprocess.PIPE).communicate()
 
-        print("> Received Nodejs output (" + str(len(output)) + ")")
+        print("> Received Nodejs output (" + str(len(output)) + " chars)")
         parsed = json.loads(output)
         
         ctexts = 'ctexts' + electionId
@@ -392,7 +398,7 @@ full: does the whole process''')
     command = args.command[0]
     if hasattr(__main__, command):
         if(command == 'create') or (command == 'full'):
-            args.electionId = str(time()).replace(".", "")
+            args.electionId = str(time.time()).replace(".", "")
         elif(len(args.command) == 2):
             args.electionId = args.command[1]            
         else:
