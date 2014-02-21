@@ -23,12 +23,137 @@ import traceback
 
 import os.path
 
-
-PK_TIMEOUT = 300
-TALLY_TIMEOUT = 1000
+PK_TIMEOUT = 60
+TALLY_TIMEOUT = 3600
 CERT = '/srv/certs/selfsigned/cert.pem'
 KEY = '/srv/certs/selfsigned/key-nopass.pem'
 DATA_DIR = "data"
+
+# configuration
+localServer = 'agoravoting-eovm'
+localPort = 8000
+node = '/usr/bin/node'
+tallyUrl = 'https://agoravoting-eovm:5000/public_api/tally'
+tallyData = {
+    # 'election_id': electionId,
+    "callback_url": "http://" + localServer + ":" + str(localPort) + "/receive_tally",
+    "extra": [],
+    "votes_url": "http://" + localServer + ":" + str(localPort) + "/" + DATA_DIR + "/",
+    "votes_hash": "sha512://"
+}
+startUrl = 'https://agoravoting-eovm:5000/public_api/election'
+# FIXME grab this from authorities tarball
+authoritiesData = [
+        {
+            "name": "Auth1",
+            "orchestra_url": "https://agoravoting-eovm:5000/api/queues",
+            "ssl_cert": """-----BEGIN CERTIFICATE-----
+MIIGLzCCBBegAwIBAgIJAJT2kz17RqWyMA0GCSqGSIb3DQEBBQUAMIGtMQswCQYD
+VQQGEwJFUzEPMA0GA1UECAwGTWFkcmlkMQ8wDQYDVQQHDAZNYWRyaWQxFDASBgNV
+BAoMC0Fnb3Jhdm90aW5nMR0wGwYDVQQLDBRDb25ncmVzb1RyYW5zcGFyZW50ZTEZ
+MBcGA1UEAwwQYWdvcmF2b3RpbmctZW92bTEsMCoGCSqGSIb3DQEJARYdaW5mb0Bj
+b25ncmVzb3RyYW5zcGFyZW50ZS5jb20wHhcNMTQwMjIwMTM1MTE1WhcNMTUwMjIw
+MTM1MTE1WjCBrTELMAkGA1UEBhMCRVMxDzANBgNVBAgMBk1hZHJpZDEPMA0GA1UE
+BwwGTWFkcmlkMRQwEgYDVQQKDAtBZ29yYXZvdGluZzEdMBsGA1UECwwUQ29uZ3Jl
+c29UcmFuc3BhcmVudGUxGTAXBgNVBAMMEGFnb3Jhdm90aW5nLWVvdm0xLDAqBgkq
+hkiG9w0BCQEWHWluZm9AY29uZ3Jlc290cmFuc3BhcmVudGUuY29tMIICIjANBgkq
+hkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA3X6tmFAoxAInqMyxnBf9CCf9IKgDGieW
+5LOl98GzBmZf8Fu+MoXIPbFt2ncW2sfgUOwKGX+QL8CNJeTnQEsrrUewHH8e0Vy2
+OR4wlCDuhqYfyjWrubBfkmsgux2+aZzZqJCsmDe1r7kgub4UaIHAKVCJPSpiB7y3
+G1cABfSklmsofuEP1uFry9f6XtfZfTkhK7Q8Qi7xP4ZOWr2mIsy4jTCTGMNzOynt
+lEYqV2f47VqW2og1L+d6YXS/ZyrmQftL94/ojNXylJ2UpUJOWb7CMtbZX6jqCoMG
+zkkgIWFokhD4joutF+DxD5M+RPy2EKsVOGfP5RElPr0YzO7FoHFp38xhKB26529d
+pC/ApS+M8nSCWXm2vOaG0vxLvZfqI2HVx9D1ghIGR0arfQuVz3xu4wTsxZnDvaMv
+MTwg1bcPkEcNLn8R31kS/PeV5ALwm3QsaatocKiJKlkzi5JfG28Kr6iS82pMB68W
+rFMTueEebGDBkl3OQHEqZuxi0dIz3C21AfFhYaPHrEJInwZ3tPJ2xLtA8E2mB4X/
+WsmNHkMBYu/5JnUSBBykDHL4JXRxrUzZ3Vq8Rc+HTGO8YBdJAp5wS8X6qMG0ETDO
+R0p1aT4C8VMNUkZrSGBPZRTlEW2p63cTRtNhpbqU6oiTUTLbEXkovxt+jJzG1YOO
+cBT53+OBMesCAwEAAaNQME4wHQYDVR0OBBYEFJPrB6WSh+jlFA+ZgS4/qQ81dVl1
+MB8GA1UdIwQYMBaAFJPrB6WSh+jlFA+ZgS4/qQ81dVl1MAwGA1UdEwQFMAMBAf8w
+DQYJKoZIhvcNAQEFBQADggIBAD0xwYkAQ4ViXbHcSYBIt1MGbRxEkqvIH0rsclZT
+bYXRvpec2hj90W9bRqJcHIhVV6RsaxQ5UicUBOz6tETwCLsq+TKkQ9gf6Y9W+YLk
+s4BfJDICzh5n6dH3mejfH5WIKoIQXGhw9QjvDNWFlwGcN1oWzP2R5uSfXbcJOG7q
+J6OnvMGkH/ijqQMCQgdDR5s6RgOTFMZz570McSjbpWkzFnRushlJyoljp6d5tLQo
+ObvLPoFfkH/H7LckbkpAMvKo4RFIlSd6E8s/m1GjG7gTh6exTh/AVgCDrICXorba
+eUdxvlbO+40HVvd0N2wxtiZoIFe6qBTr+Ax0s/wrnRPlcq15hU/w+lu/sO7SRYvU
+EWEqHuKFxcFl4lfwyTO9wcuMH6Sn1Hk7n9brfTEKWMRHNVlZ/7vpDbtW57d2cbRY
+iPobH2ZPLTPCNxE83XRZ7duPb+1nXajt0VJDEE/2DZgQcMqEVcrD2Jfi3bK1jUdC
+lYMtRXZ+ULtmewWseKWpxIhiVHKfeRxNkAq6MJnCDj+I2nk5ptfKYEBhXScr5PG5
+RrAJUppW1+vdWUsmm1s1XIspdJQefRmleMQkkWuspjnSQjQyRvwuaZO0WOwWHSct
+NpyDMJerO3aSrZ16i1byYc4P553eNn9sItrU00pD1CbJUuyNl6wPHqnIzAc0JyQg
+1yJx
+-----END CERTIFICATE-----"""
+        },
+        {
+            "name": "Auth2",
+            "orchestra_url": "https://agoravoting-eovm2:5000/api/queues",
+            "ssl_cert": """-----BEGIN CERTIFICATE-----
+MIIGMTCCBBmgAwIBAgIJAPqevruOc78lMA0GCSqGSIb3DQEBBQUAMIGuMQswCQYD
+VQQGEwJFUzEPMA0GA1UECAwGTWFkcmlkMQ8wDQYDVQQHDAZNYWRyaWQxFDASBgNV
+BAoMC0Fnb3Jhdm90aW5nMR0wGwYDVQQLDBRDb25ncmVzb1RyYW5zcGFyZW50ZTEa
+MBgGA1UEAwwRYWdvcmF2b3RpbmctZW92bTIxLDAqBgkqhkiG9w0BCQEWHWluZm9A
+Y29uZ3Jlc290cmFuc3BhcmVudGUuY29tMB4XDTE0MDIyMDEzNTcwOFoXDTE1MDIy
+MDEzNTcwOFowga4xCzAJBgNVBAYTAkVTMQ8wDQYDVQQIDAZNYWRyaWQxDzANBgNV
+BAcMBk1hZHJpZDEUMBIGA1UECgwLQWdvcmF2b3RpbmcxHTAbBgNVBAsMFENvbmdy
+ZXNvVHJhbnNwYXJlbnRlMRowGAYDVQQDDBFhZ29yYXZvdGluZy1lb3ZtMjEsMCoG
+CSqGSIb3DQEJARYdaW5mb0Bjb25ncmVzb3RyYW5zcGFyZW50ZS5jb20wggIiMA0G
+CSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCk3ydC7aRMHAAPjtyMzfpALsgu8XYf
+rEV2slXJqfE3Tdb5T+PeTBm9VklFowNdwmXRljM7wfHgDPQL7jddhUZLdb819noi
+Vt8H/IwcTfdB5IzXnYCkLKrse9Xcf+FnUcfwPE4L0mPcVLZkAC9JoSxy1Um7d/5W
+XgRYWYHBlwTjJPjI8pmuGqRdsOJ8gnf+ouNcE843jmsOJDGLU2H68hgZwRy7biRO
+nPqRUTVVzZ/bIYGeLPhwVTah4XpMD3n5xjVp6NxiYm/3XtrOKBiQED5dBoeFRYIU
+2vtrH8U8D3Vi30BdK4Y5VKaqpABvWLqf9LhZEMLXH6WB2JfDmxPMu7ZhdZLqAbp+
+3kYbYUiHRn83NCTheunWUiEC7u53Vn+vnG8t4cYb/cHr7pZmdbd8HQeAlsvbdhiQ
+zr5fNuCumAD+I+NOaglKTNwEUdxPmSWp9G+o0dZ25W+MDF7sVvZ8JfU2FN3R4eiy
+jTlc/Cy4DqfJUMqmH9vrCcWGFi3i1zp+YpVrO0eLgdX3V3RAvot0pmDe3pmf17mW
+YeAPg+UCBZyZSy89WITU8Cq4+T8peALGoKZgF73EgSftgpvATgvnFOw4CRPeY6Cn
+lD0hSQ1RHKH+HgsKCPo7Qid154/Ml0+zw9NegTMNz2H9Vq01g+ncTYL/zECdDs63
+ZhbyLQO5dfTBTQIDAQABo1AwTjAdBgNVHQ4EFgQUllH8b+1seWi/K7B6nL3ZYEax
+HlcwHwYDVR0jBBgwFoAUllH8b+1seWi/K7B6nL3ZYEaxHlcwDAYDVR0TBAUwAwEB
+/zANBgkqhkiG9w0BAQUFAAOCAgEAEZGtlUHaP9zW3Se+Yoviy9r/NXWEvMXm32Jp
+8kGFYg/HRIZrVnxk4gu+tdfPwxHzgmrVAJxj+Zz0eumWCD9AJVF+wfh2bAKJzXys
+rLp0PDXlEzYco4j2MfS21JcFnUDyQxWNxmYokpQwnEn13xpsJPmZ/XIGIWR6Hwej
+4y09GzqbQPYvx6tjge25gDfaKz3eKBjEb3qo4jk9iog/+a4SoIgPRp7GoOeRVZ7E
+hZPJipeU6KQ/ToG7YzmzS/9gT6u7C4x0xVArX0PQCacLnLk54gGxx1ytF/dHHp/p
+X1xc9w/kvoydKpZ2g6DlEMjc5cvVdN5/hYvv0XK7vmf+6bychyhqVpCw+S35adwW
+QWOP6r6FUg67/3Y35VzMTgE6IRNa25KxQ6Eu4lRoa556534/N8kLJi5m7y82C88F
+c25GK4ULSxxxGWE8K5G+9kAGwYny1E6oidzJefewG3vnoH1OaCjNXtqxuNx+Qhw9
+XTcJRQtd42VpJrMME+uGYal4Es4H3qgqf4CwvAEZmYBKU9JTr99DQ/I525mxE9m9
+C22hrixY/sFovjfmuBTbKNmjNgMOlLfjrF7/QlHaw5ca5C5LEhBpTge/DQXfZzgp
+E2Lmr0u/4Bc1lrv8Kj4ZJz0yysMPNfrM2SxfC28l4Oxm7uGQ31pPUkP5j55dEksv
+hcxIp9g=
+-----END CERTIFICATE-----"""
+        }
+    ]
+
+startData = {
+    # "election_id": electionId,
+    "is_recurring": False,
+    "callback_url": "http://" + localServer + ":" + str(localPort) + "/key_done",
+    "extra": [],
+    "title": "Test election",
+    "url": "https://example.com/election/url",
+    "description": "election description",
+    "questions_data": [{
+        "question": "Who Should be President?",
+        "tally_type": "ONE_CHOICE",
+        # "answers": ["Alice", "Bob"],
+        "answers": [
+            {'a': 'ballot/answer',
+            'details': '',
+            'value': 'Alice'},
+            {'a': 'ballot/answer',
+            'details': '',
+            'value': 'Bob'}
+        ], 
+        "max": 1, "min": 0
+    }],
+    "voting_start_date": "2013-12-06T18:17:14.457000",
+    "voting_end_date": "2013-12-09T18:17:14.457000",
+    "authorities": authoritiesData 
+}
+
+# code
 
 # thread signalling
 cv = threading.Condition()
@@ -187,128 +312,7 @@ def downloadTally(url, electionId):
 
             handle.write(block)
 
-# configuration
-localServer = 'agoravoting-eovm'
-localPort = 8000
-node = '/usr/bin/node'
-tallyUrl = 'https://agoravoting-eovm:5000/public_api/tally'
-tallyData = {
-    # 'election_id': electionId,
-    "callback_url": "http://" + localServer + ":" + str(localPort) + "/receive_tally",
-    "extra": [],
-    "votes_url": "http://" + localServer + ":" + str(localPort) + "/" + DATA_DIR + "/",
-    "votes_hash": "sha512://"
-}
-startUrl = 'https://agoravoting-eovm:5000/public_api/election'
-authoritiesData = [
-        {
-            "name": "Auth1",
-            "orchestra_url": "https://agoravoting-eovm:5000/api/queues",
-            "ssl_cert": """-----BEGIN CERTIFICATE-----
-MIIGLzCCBBegAwIBAgIJAJT2kz17RqWyMA0GCSqGSIb3DQEBBQUAMIGtMQswCQYD
-VQQGEwJFUzEPMA0GA1UECAwGTWFkcmlkMQ8wDQYDVQQHDAZNYWRyaWQxFDASBgNV
-BAoMC0Fnb3Jhdm90aW5nMR0wGwYDVQQLDBRDb25ncmVzb1RyYW5zcGFyZW50ZTEZ
-MBcGA1UEAwwQYWdvcmF2b3RpbmctZW92bTEsMCoGCSqGSIb3DQEJARYdaW5mb0Bj
-b25ncmVzb3RyYW5zcGFyZW50ZS5jb20wHhcNMTQwMjIwMTM1MTE1WhcNMTUwMjIw
-MTM1MTE1WjCBrTELMAkGA1UEBhMCRVMxDzANBgNVBAgMBk1hZHJpZDEPMA0GA1UE
-BwwGTWFkcmlkMRQwEgYDVQQKDAtBZ29yYXZvdGluZzEdMBsGA1UECwwUQ29uZ3Jl
-c29UcmFuc3BhcmVudGUxGTAXBgNVBAMMEGFnb3Jhdm90aW5nLWVvdm0xLDAqBgkq
-hkiG9w0BCQEWHWluZm9AY29uZ3Jlc290cmFuc3BhcmVudGUuY29tMIICIjANBgkq
-hkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA3X6tmFAoxAInqMyxnBf9CCf9IKgDGieW
-5LOl98GzBmZf8Fu+MoXIPbFt2ncW2sfgUOwKGX+QL8CNJeTnQEsrrUewHH8e0Vy2
-OR4wlCDuhqYfyjWrubBfkmsgux2+aZzZqJCsmDe1r7kgub4UaIHAKVCJPSpiB7y3
-G1cABfSklmsofuEP1uFry9f6XtfZfTkhK7Q8Qi7xP4ZOWr2mIsy4jTCTGMNzOynt
-lEYqV2f47VqW2og1L+d6YXS/ZyrmQftL94/ojNXylJ2UpUJOWb7CMtbZX6jqCoMG
-zkkgIWFokhD4joutF+DxD5M+RPy2EKsVOGfP5RElPr0YzO7FoHFp38xhKB26529d
-pC/ApS+M8nSCWXm2vOaG0vxLvZfqI2HVx9D1ghIGR0arfQuVz3xu4wTsxZnDvaMv
-MTwg1bcPkEcNLn8R31kS/PeV5ALwm3QsaatocKiJKlkzi5JfG28Kr6iS82pMB68W
-rFMTueEebGDBkl3OQHEqZuxi0dIz3C21AfFhYaPHrEJInwZ3tPJ2xLtA8E2mB4X/
-WsmNHkMBYu/5JnUSBBykDHL4JXRxrUzZ3Vq8Rc+HTGO8YBdJAp5wS8X6qMG0ETDO
-R0p1aT4C8VMNUkZrSGBPZRTlEW2p63cTRtNhpbqU6oiTUTLbEXkovxt+jJzG1YOO
-cBT53+OBMesCAwEAAaNQME4wHQYDVR0OBBYEFJPrB6WSh+jlFA+ZgS4/qQ81dVl1
-MB8GA1UdIwQYMBaAFJPrB6WSh+jlFA+ZgS4/qQ81dVl1MAwGA1UdEwQFMAMBAf8w
-DQYJKoZIhvcNAQEFBQADggIBAD0xwYkAQ4ViXbHcSYBIt1MGbRxEkqvIH0rsclZT
-bYXRvpec2hj90W9bRqJcHIhVV6RsaxQ5UicUBOz6tETwCLsq+TKkQ9gf6Y9W+YLk
-s4BfJDICzh5n6dH3mejfH5WIKoIQXGhw9QjvDNWFlwGcN1oWzP2R5uSfXbcJOG7q
-J6OnvMGkH/ijqQMCQgdDR5s6RgOTFMZz570McSjbpWkzFnRushlJyoljp6d5tLQo
-ObvLPoFfkH/H7LckbkpAMvKo4RFIlSd6E8s/m1GjG7gTh6exTh/AVgCDrICXorba
-eUdxvlbO+40HVvd0N2wxtiZoIFe6qBTr+Ax0s/wrnRPlcq15hU/w+lu/sO7SRYvU
-EWEqHuKFxcFl4lfwyTO9wcuMH6Sn1Hk7n9brfTEKWMRHNVlZ/7vpDbtW57d2cbRY
-iPobH2ZPLTPCNxE83XRZ7duPb+1nXajt0VJDEE/2DZgQcMqEVcrD2Jfi3bK1jUdC
-lYMtRXZ+ULtmewWseKWpxIhiVHKfeRxNkAq6MJnCDj+I2nk5ptfKYEBhXScr5PG5
-RrAJUppW1+vdWUsmm1s1XIspdJQefRmleMQkkWuspjnSQjQyRvwuaZO0WOwWHSct
-NpyDMJerO3aSrZ16i1byYc4P553eNn9sItrU00pD1CbJUuyNl6wPHqnIzAc0JyQg
-1yJx
------END CERTIFICATE-----"""
-        },
-        {
-            "name": "Auth2",
-            "orchestra_url": "https://agoravoting-eovm2:5000/api/queues",
-            "ssl_cert": """-----BEGIN CERTIFICATE-----
-MIIGMTCCBBmgAwIBAgIJAPqevruOc78lMA0GCSqGSIb3DQEBBQUAMIGuMQswCQYD
-VQQGEwJFUzEPMA0GA1UECAwGTWFkcmlkMQ8wDQYDVQQHDAZNYWRyaWQxFDASBgNV
-BAoMC0Fnb3Jhdm90aW5nMR0wGwYDVQQLDBRDb25ncmVzb1RyYW5zcGFyZW50ZTEa
-MBgGA1UEAwwRYWdvcmF2b3RpbmctZW92bTIxLDAqBgkqhkiG9w0BCQEWHWluZm9A
-Y29uZ3Jlc290cmFuc3BhcmVudGUuY29tMB4XDTE0MDIyMDEzNTcwOFoXDTE1MDIy
-MDEzNTcwOFowga4xCzAJBgNVBAYTAkVTMQ8wDQYDVQQIDAZNYWRyaWQxDzANBgNV
-BAcMBk1hZHJpZDEUMBIGA1UECgwLQWdvcmF2b3RpbmcxHTAbBgNVBAsMFENvbmdy
-ZXNvVHJhbnNwYXJlbnRlMRowGAYDVQQDDBFhZ29yYXZvdGluZy1lb3ZtMjEsMCoG
-CSqGSIb3DQEJARYdaW5mb0Bjb25ncmVzb3RyYW5zcGFyZW50ZS5jb20wggIiMA0G
-CSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCk3ydC7aRMHAAPjtyMzfpALsgu8XYf
-rEV2slXJqfE3Tdb5T+PeTBm9VklFowNdwmXRljM7wfHgDPQL7jddhUZLdb819noi
-Vt8H/IwcTfdB5IzXnYCkLKrse9Xcf+FnUcfwPE4L0mPcVLZkAC9JoSxy1Um7d/5W
-XgRYWYHBlwTjJPjI8pmuGqRdsOJ8gnf+ouNcE843jmsOJDGLU2H68hgZwRy7biRO
-nPqRUTVVzZ/bIYGeLPhwVTah4XpMD3n5xjVp6NxiYm/3XtrOKBiQED5dBoeFRYIU
-2vtrH8U8D3Vi30BdK4Y5VKaqpABvWLqf9LhZEMLXH6WB2JfDmxPMu7ZhdZLqAbp+
-3kYbYUiHRn83NCTheunWUiEC7u53Vn+vnG8t4cYb/cHr7pZmdbd8HQeAlsvbdhiQ
-zr5fNuCumAD+I+NOaglKTNwEUdxPmSWp9G+o0dZ25W+MDF7sVvZ8JfU2FN3R4eiy
-jTlc/Cy4DqfJUMqmH9vrCcWGFi3i1zp+YpVrO0eLgdX3V3RAvot0pmDe3pmf17mW
-YeAPg+UCBZyZSy89WITU8Cq4+T8peALGoKZgF73EgSftgpvATgvnFOw4CRPeY6Cn
-lD0hSQ1RHKH+HgsKCPo7Qid154/Ml0+zw9NegTMNz2H9Vq01g+ncTYL/zECdDs63
-ZhbyLQO5dfTBTQIDAQABo1AwTjAdBgNVHQ4EFgQUllH8b+1seWi/K7B6nL3ZYEax
-HlcwHwYDVR0jBBgwFoAUllH8b+1seWi/K7B6nL3ZYEaxHlcwDAYDVR0TBAUwAwEB
-/zANBgkqhkiG9w0BAQUFAAOCAgEAEZGtlUHaP9zW3Se+Yoviy9r/NXWEvMXm32Jp
-8kGFYg/HRIZrVnxk4gu+tdfPwxHzgmrVAJxj+Zz0eumWCD9AJVF+wfh2bAKJzXys
-rLp0PDXlEzYco4j2MfS21JcFnUDyQxWNxmYokpQwnEn13xpsJPmZ/XIGIWR6Hwej
-4y09GzqbQPYvx6tjge25gDfaKz3eKBjEb3qo4jk9iog/+a4SoIgPRp7GoOeRVZ7E
-hZPJipeU6KQ/ToG7YzmzS/9gT6u7C4x0xVArX0PQCacLnLk54gGxx1ytF/dHHp/p
-X1xc9w/kvoydKpZ2g6DlEMjc5cvVdN5/hYvv0XK7vmf+6bychyhqVpCw+S35adwW
-QWOP6r6FUg67/3Y35VzMTgE6IRNa25KxQ6Eu4lRoa556534/N8kLJi5m7y82C88F
-c25GK4ULSxxxGWE8K5G+9kAGwYny1E6oidzJefewG3vnoH1OaCjNXtqxuNx+Qhw9
-XTcJRQtd42VpJrMME+uGYal4Es4H3qgqf4CwvAEZmYBKU9JTr99DQ/I525mxE9m9
-C22hrixY/sFovjfmuBTbKNmjNgMOlLfjrF7/QlHaw5ca5C5LEhBpTge/DQXfZzgp
-E2Lmr0u/4Bc1lrv8Kj4ZJz0yysMPNfrM2SxfC28l4Oxm7uGQ31pPUkP5j55dEksv
-hcxIp9g=
------END CERTIFICATE-----"""
-        }
-    ]
 
-startData = {
-    # "election_id": electionId,
-    "is_recurring": False,
-    "callback_url": "http://" + localServer + ":" + str(localPort) + "/key_done",
-    "extra": [],
-    "title": "Test election",
-    "url": "https://example.com/election/url",
-    "description": "election description",
-    "questions_data": [{
-        "question": "Who Should be President?",
-        "tally_type": "ONE_CHOICE",
-        # "answers": ["Alice", "Bob"],
-        "answers": [
-            {'a': 'ballot/answer',
-            'details': '',
-            'value': 'Alice'},
-            {'a': 'ballot/answer',
-            'details': '',
-            'value': 'Bob'}
-        ], 
-        "max": 1, "min": 0
-    }],
-    "voting_start_date": "2013-12-06T18:17:14.457000",
-    "voting_end_date": "2013-12-09T18:17:14.457000",
-    "authorities": authoritiesData 
-}
 
 
 
