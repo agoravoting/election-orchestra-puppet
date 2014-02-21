@@ -3,15 +3,12 @@ Setup
 
 The easiest set up is one git clone of election-orchestra-puppet per authority targeting different folders on the host machine. 
 
-For _each_ authority:
+* Follow the instructions in election-orchestra-puppet readme for vagrant install, then 
+for each authority (for n = 2 upwards after the first authority)
 
-* Follow the instructions in election-orchestra-puppet readme for vagrant install, then
+* Vagrantfile
 
-For each authority (for n = 2 upwards after the first authority)
-
-Vagrantfile
-
-config.vm.host_name = "agoravoting-eovm+n"
+    * config.vm.host_name = "agoravoting-eovm+n"
 
     * comment the port redirections:
 
