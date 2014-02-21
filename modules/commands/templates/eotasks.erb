@@ -19,7 +19,7 @@ then
 elif [ "$1" == 'show' ]
 then
     python app.py --show-external '$2' 2>/dev/null
-elif [ "$1" == 'approve' ]
+elif [ "$1" == 'accept' ]
 then
     python app.py --finish '$2' '{"status": "accepted"}' 2>/dev/null
 elif [ "$1" == 'deny' ]
