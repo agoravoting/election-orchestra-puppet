@@ -94,7 +94,7 @@ else {
         console.log(serialized);
     }
     catch(err) {
-        console.error("* Exception parsing pk " + err);
+        console.error("* Exception encrypting votes " + err);
         process.exit(1)
     }  
 }
