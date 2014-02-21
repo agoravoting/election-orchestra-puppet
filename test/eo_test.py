@@ -134,7 +134,7 @@ def waitForPublicKey():
     if(cv.done):
         try:
             pk = cv.data['session_data'][0]['pubkey']
-            print("> Process finished, public key is")
+            print("> Election created, public key is")
             print(pk)            
         except:
             print("* Could not retrieve public key " + str(cv.data))
@@ -181,21 +181,22 @@ def downloadTally(url, electionId):
             handle.write(block)
 
 # configuration
+localServer = 'agoravoting-eovm'
 localPort = 8000
 node = '/usr/bin/node'
 tallyUrl = 'https://agoravoting-eovm:5000/public_api/tally'
 tallyData = {
     # 'election_id': electionId,
-    'callback_url': 'http://agoravoting-eovm:' + str(localPort) + '/receive_tally',
-    'extra': [],
-    'votes_url': 'http://agoravoting-eovm:' + str(localPort) + '/',
-    'votes_hash': 'sha512://'
+    "callback_url": "http://" + localServer + ":" + str(localPort) + "/receive_tally",
+    "extra": [],
+    "votes_url": "http://" + localServer + ":" + str(localPort) + "/",
+    "votes_hash": "sha512://"
 }
 startUrl = 'https://agoravoting-eovm:5000/public_api/election'
 startData = {
     # "election_id": electionId,
     "is_recurring": False,
-    "callback_url": "http://localhost:" + str(localPort) + "/key_done",
+    "callback_url": "http://" + localServer + ":" + str(localPort) + "/key_done",
     "extra": [],
     "title": "Test election",
     "url": "https://example.com/election/url",
