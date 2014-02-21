@@ -37,9 +37,12 @@ The easiest set up is one git clone of election-orchestra-puppet per authority t
     For example, for two authorities, the /etc/hosts would be
 
     192.168.50.2 agoravoting-eovm
-    192.168.50.3 agoravoting-eovm2
 
     192.168.50.3 agoravoting-eovm2
+
+    
+    192.168.50.3 agoravoting-eovm2
+
     192.168.50.2 agoravoting-eovm
 
 * Append each authority’s certificate (/srv/certs/selfsigned/cert.pem) into every other’s authority’s calist (/srv/certs/selfsigned/calist)
@@ -61,6 +64,7 @@ The easiest set up is one git clone of election-orchestra-puppet per authority t
 * restart nginx and eorhcestra on each authority 
 
     sudo /etc/init.d/nginx restart
+
     sudo supervisorctl restart eorchestra
 
 * Install nodejs - sudo apt-get install nodejs
@@ -68,7 +72,9 @@ The easiest set up is one git clone of election-orchestra-puppet per authority t
 * Clone agora-ciudadana inside the /vagrant/test directory
 
      cd /vagrant/test
+
      git clone git@github.com:agoraciudadana/agora-ciudadana.git
+
      git checkout security 
 
 * Set up eo_test.py
@@ -77,7 +83,7 @@ The easiest set up is one git clone of election-orchestra-puppet per authority t
 
     * Activate the virtual environment
 
-      source venv/bin/activate in the /home/eorchestra
+      source venv/bin/activate in /home/eorchestra
 
 * Run
 
