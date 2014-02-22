@@ -24,48 +24,17 @@ The easiest set up is one git clone of election-orchestra-puppet per authority t
     * manifests/init.pp:
 
         host => 'agoravoting-eovm+n'
+        ip_address => "192.168.50.2+n"
 
         If you forget to make these changes before vagrant up you can use vagrant reload to alter the configuration
 
 * vagrant up
 
-* Set up /etc/hosts
-
-    Replace 127.0.0.1 with the vms ip 
-    add ips for the other authorities (according to the ip assigned in the vagrant file)
-
-    For example, for two authorities, the /etc/hosts would be
-
-    192.168.50.2 agoravoting-eovm
-
-    192.168.50.3 agoravoting-eovm2
-
-    
-    192.168.50.3 agoravoting-eovm2
-
-    192.168.50.2 agoravoting-eovm
-
-* Append each authority’s certificate (/srv/certs/selfsigned/cert.pem) into every other’s authority’s calist (/srv/certs/selfsigned/calist)
-
-* Specify ip's base_settings.py on each authority - sudo vi /home/eorchestra/election-orchestra/base_settings.py
-
-    the following entries:
-
-    VERIFICATUM_SERVER_URL 
-
-    VERIFICATUM_HINT_SERVER_SOCKET 
-
-    should be in the form of ipaddresses not hostnames, as in
-
-    VERIFICATUM_SERVER_URL = 'http://192.168.50.2'
-
-    VERIFICATUM_HINT_SERVER_SOCKET = '192.168.50.2'
-
-* restart nginx and eorchestra on each authority 
-
-    sudo /etc/init.d/nginx restart
-
-    sudo supervisorctl restart eorchestra
+* install the peer package of each other authority. In auth1 execute:
+        sudo eopeers --show-mine
+* copy the output to a file in auth2 in /tmp/auth.package for example and then execute:
+        sudo eopeers --install /tmp/auth.package
+* Then do the same changing auth1<>auth2
 
 * Install nodejs - sudo apt-get install nodejs
 
