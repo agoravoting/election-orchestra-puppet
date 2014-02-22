@@ -72,9 +72,8 @@ The easiest set up is one git clone of election-orchestra-puppet per authority t
 * Clone agora-ciudadana inside the /vagrant/test directory
 
      cd /vagrant/test
-
-     git clone git@github.com:agoraciudadana/agora-ciudadana.git
-
+     git clone https://github.com/agoraciudadana/agora-ciudadana.git
+     cd agora-ciudadana
      git checkout security 
 
 * Set up eo_test.py

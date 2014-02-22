@@ -42,6 +42,12 @@ class commands() {
         content => template('commands/eoauto.erb'),
     } ->
 
+    file { '/usr/bin/eotest':
+        ensure  => file,
+        mode    => 'a+x',
+        content => template('commands/eotest.erb'),
+    } ->
+
     file { '/usr/bin/eotasks':
         ensure  => file,
         mode    => 'a+x',

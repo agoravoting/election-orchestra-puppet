@@ -23,17 +23,18 @@ cp -rpxf /srv/certs/ $BACKUPD/certs
 cp $EO_DIR/base_settings.py $BACKUPD/eo_base_settings.py
 cp $EO_DIR/db.sqlite $BACKUPD/eo_db.sqlite
 
-if [ -f /srv/election-orchestra/server1/public/* ]
+
+if [ ! $(ls /srv/election-orchestra/server1/public/ | wc -l) -eq "0" ]
 then
     cp -rpxf /srv/election-orchestra/server1/public/ $BACKUPD/eo_public
 fi
 
-if [ -d $BACKUPD/eo_private ] && [ -f $EO_DIR/datastore/private/* ]
+if [ ! $(ls $EO_DIR/datastore/private/ | wc -l) -eq "0" ]
 then
     cp -rpxf $EO_DIR/datastore/private $BACKUPD/eo_private
 fi
 
-if [ -d /etc/eopeers ] && [ -f /etc/eopeers/* ]
+if [ -d /etc/eopeers ] && [ ! $(ls /etc/eopeers/ | wc -l) -eq "0" ]
 then
     cp -rpxf /etc/eopeers $BACKUPD/eo_peers
 fi

@@ -38,7 +38,7 @@ then
     chown eorchestra:users $EO_DIR/datastore/private/
 fi
 
-if [ -f $BACKUPD/eo_private/* ]
+if [ -d $BACKUPD/eo_private/ ]
 then
     cp -rpxf $BACKUPD/eo_private/* $EO_DIR/datastore/private/
 fi
@@ -49,16 +49,16 @@ then
     chown eorchestra:users /srv/election-orchestra/server1/public/
 fi
 
-if [ -f $BACKUPD/public/* ]
+if [ -d  $BACKUPD/public/ ]
 then
     cp -rpxf $BACKUPD/public/* /srv/election-orchestra/server1/public/
 fi
 
-if [ ! /etc/eopeers/ ]
+if [ ! -d /etc/eopeers/ ]
 then
     mkdir -p /etc/eopeers/
 fi
-if [ -f $BACKUPD/eo_peers/* ]
+if [ -d $BACKUPD/eo_peers/ ]
 then
     cp -rpxf $BACKUPD/eo_peers/* /etc/eopeers/
     eopeers --install /etc/eopeers/*
