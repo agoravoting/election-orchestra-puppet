@@ -42,6 +42,12 @@ class commands() {
         content => template('commands/eoauto.erb'),
     } ->
 
+    file { '/usr/bin/vmnd.sh':
+        ensure  => file,
+        mode    => 'a+x',
+        content => template('commands/vmnd.sh.erb'),
+    } ->
+
     file { '/srv/eotests':
         ensure  => directory,
         owner => 'eorchestra',

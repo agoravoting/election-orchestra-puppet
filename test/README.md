@@ -1,6 +1,4 @@
-# Setup
-
-## Vagrant setup
+# Vagrant setup
 
 The easiest set up is one git clone of election-orchestra-puppet per authority targeting different folders on the host machine. 
 
@@ -38,33 +36,6 @@ Each authority needs to recognize each other. To do so, you just follow the inst
 3. Reload nginx rules, so that it allows communications with the new peer:
     sudo service nginx restart
 
-## Configure agora
+## Follow the main instructions
 
-To create votes we use the code in agora-ciudadana via nodejs. You need to:
-
-1. Install nodejs
-    sudo apt-get install nodejs
-
-2. Clone agora-ciudadana inside the /vagrant/test directory
-    cd /vagrant/test
-    git clone https://github.com/agoraciudadana/agora-ciudadana.git
-    cd agora-ciudadana
-    git checkout security
-
-3. Activate the virtual environment (in the future, you start from this step)
-    source /home/eorchestra/venv/bin/activate
-
-4. use eotest
-    eotest --help
- 
-# Troubleshooting
-
-* Invalid socket address
-
-Probably means there is an old instance of verificatum running. Running the following command should kill the processes:
-    sudo supervisorctl restart eorchestra
-
-* Verificatum hangs
-
-Did you forget to use ip’s instead of hostnames in the base_settings.py?  if so, change the file and restart eorchestra:
-    sudo supervisorctl restart eorchestra
+That's all in here: you can follow the instruction in election-orchestra-puppet/README.md
