@@ -3,6 +3,7 @@
 import argparse
 import os
 import json
+import shutil
 import subprocess
 
 peerlist = "/etc/eopeers"
@@ -55,8 +56,10 @@ def install(peerlist, path):
     with open("/srv/certs/selfsigned/calist", "r") as f:
         calist_data = f.read().strip()
     if el_json["ssl_certificate"] not in calist_data:
-        subprocess.call("echo '\n%s' >> /srv/certs/selfsigned/calist" %
+        subprocess.call("echo '%s' >> /srv/certs/selfsigned/calist" %
             el_json["ssl_certificate"], shell=True)
+
+    shutils.copyfile("/srv/certs/selfsigned/calist", "/home/eorchestra/election-orchestra/certs/selfsigned")
 
     # save peer package
     path = os.path.join(peerlist, el_json['hostname'] + ".package")
@@ -99,6 +102,8 @@ def uninstall(peerlist, hostname):
     data = data.replace(el_json["ssl_certificate"], "")
     with open('/srv/certs/selfsigned/calist', 'w') as f:
         f.write(data)
+
+    shutils.copyfile("/srv/certs/selfsigned/calist", "/home/eorchestra/election-orchestra/certs/selfsigned")
 
     # finally remove the package
     os.unlink(path)
