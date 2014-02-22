@@ -309,7 +309,7 @@ def encrypt(args):
         vmndFile = os.path.join(DATA_DIR, "vmndCtexts" + electionId)
         if(votesCount == 0):
             votesCount = 10
-        subprocess.call([vmnd, electionId, str(votesCount)])
+        subprocess.call([vmnd, electionId, str(votesCount), vmndFile])
         if (os.path.isfile(vmndFile)):
             with open(vmndFile, 'r') as content_file:
                 lines = content_file.readlines()
