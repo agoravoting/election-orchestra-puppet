@@ -171,7 +171,7 @@ def writeVotes(votesData, fileName):
         "voter_username": 'foo',
         "issue_date": str(datetime.now()),
         "election_hash": {"a": "hash/sha256/value", "value": "foobar"},
-        "election_uuid": 'vota14'
+        # "election_uuid": 'vota14'
         }
 
         q_answer = vote['question0']
@@ -303,24 +303,57 @@ def encrypt(args):
     pkFile = 'pk' + electionId
     votesFile = args.vfile
     votesCount = args.vcount
-    print("> Encrypting votes (" + votesFile + ", pk = " + pkFile + ", " + str(votesCount) + ")..")
-    pkPath = os.path.join(DATA_DIR, pkFile)
-    votesPath = os.path.join(DATA_DIR, votesFile)
-    # if not present in data dir, use current directory
-    if not (os.path.isfile(votesPath)):
-        votesPath = votesFile
-    if(os.path.isfile(pkPath)) and (os.path.isfile(votesPath)):
-        output, error = subprocess.Popen([node, "encrypt.js", pkPath, votesPath, str(votesCount)], stdout = subprocess.PIPE).communicate()
+    ctexts = 'ctexts' + electionId
+    # encrypting with vmnd
+    if(args.vmnd):
+        vmnd = "./vmnd.sh"
+        vmndFile = os.path.join(DATA_DIR, "vmndCtexts" + electionId)
+        if(votesCount == 0):
+            votesCount = 10
+        subprocess.call([vmnd, electionId, str(votesCount)])
+        if (os.path.isfile(vmndFile)):
+            with open(vmndFile, 'r') as content_file:
+                lines = content_file.readlines()
+            votes = []
+            
+            for line in lines:
+                fields = {
+                    "is_vote_secret":True,"action":
+                    "vote",
+                    "issue_date":str(datetime.now()),
+                    "unique_randomness":"foo",
+                }
+                lineJson = json.loads(line)
+                lineJson["commitment"] = "foo"
+                lineJson["response"] = "foo"
+                lineJson["challenge"] = "foo"
+                fields["question0"] = lineJson
+                votes.append(fields)
 
-        print("> Received Nodejs output (" + str(len(output)) + " chars)")
-        parsed = json.loads(output)
+            writeVotes(votes, ctexts)
 
-        ctexts = 'ctexts' + electionId
-        print("> Writing file to " + ctexts)
-        writeVotes(parsed, ctexts)
+        else:
+            print("Could not read vmnd votes file " + vmndFile)
+            exit(1)
     else:
-        print("No public key or votes file, exiting..")
-        exit(1)
+        print("> Encrypting votes (" + votesFile + ", pk = " + pkFile + ", " + str(votesCount) + ")..")
+        pkPath = os.path.join(DATA_DIR, pkFile)
+        votesPath = os.path.join(DATA_DIR, votesFile)
+        # if not present in data dir, use current directory
+        if not (os.path.isfile(votesPath)):
+            votesPath = votesFile
+        if(os.path.isfile(pkPath)) and (os.path.isfile(votesPath)):
+            output, error = subprocess.Popen([node, "encrypt.js", pkPath, votesPath, str(votesCount)], stdout = subprocess.PIPE).communicate()
+
+            print("> Received Nodejs output (" + str(len(output)) + " chars)")
+            parsed = json.loads(output)
+
+            
+            print("> Writing file to " + ctexts)
+            writeVotes(parsed, ctexts)
+        else:
+            print("No public key or votes file, exiting..")
+            exit(1)
 
 def tally(args):
     if(args.command[0] == "tally"):
@@ -368,6 +401,7 @@ full: does the whole process''')
     parser.add_argument('--mypeerpkg', help='path to my peer package. if empty, calls to eopeers --show-mine', default = None)
     parser.add_argument('--vfile', help='json file to read votes from', default = 'votes.json')
     parser.add_argument('--vcount', help='number of votes to generate (generates duplicates if more than in json file)', type=int, default = 0)
+    parser.add_argument('--vmnd', action='store_true', help='encrypts with vmnd')
     args = parser.parse_args()
     command = args.command[0]
     if hasattr(__main__, command):
