@@ -1,74 +1,67 @@
-Setup
-=====
+# Setup
+
+## Vagrant setup
 
 The easiest set up is one git clone of election-orchestra-puppet per authority targeting different folders on the host machine. 
 
-* Follow the instructions in election-orchestra-puppet readme for vagrant install
+Follow the instructions in election-orchestra-puppet/README.md for vagrant install but changing the Vagrantfile for each of the authorities so that (n means the authority number):
 
-* Vagrantfile (for each authority)
+* change hostname:
+    config.vm.host_name = "agoravoting-eovm+n"
 
-    * config.vm.host_name = "agoravoting-eovm+n"
+* comment or remove the port redirections:
+    config.vm.network "forwarded_port", guest: 5000, host: 5000
+    config.vm.network "forwarded_port", guest: 4081, host: 4081
+    config.vm.network "forwarded_port", guest: 8081, host: 8081
 
-    * comment the port redirections:
+* uncomment the private network line:
+    config.vm.network "private_network", ip: "192.168.50.2+n"
 
-        config.vm.network "forwarded_port", guest: 5000, host: 5000
-        
-        config.vm.network "forwarded_port", guest: 4081, host: 4081
-        
-        config.vm.network "forwarded_port", guest: 8081, host: 8081
+* modify manifests/init.pp accordingly:
+    host => 'agoravoting-eovm+n'
+    ip_address => "192.168.50.2+n"
 
-    * uncomment the private network line:
+If you forget to make these changes before vagrant up you can use vagrant reload to alter the configuration
 
-        config.vm.network "private_network", ip: "192.168.50.2+n"    
+After that you can proceed with the instructions, so that you end up executing:
 
-    * manifests/init.pp:
+## Authorize connections among the authorities
 
-        host => 'agoravoting-eovm+n'
-        ip_address => "192.168.50.2+n"
+Each authority needs to recognize each other. To do so, you just follow the instructions in election-orchestra-puppet/README.md regarding "eopeers" command. This is more or less what you'd have to do in each authority:
 
-        If you forget to make these changes before vagrant up you can use vagrant reload to alter the configuration
+1. Get the peer package of the curren authority. Execute:
+    sudo eopeers --show-mine
 
-* vagrant up
+2. copy the output to a file in the other authority in /tmp/auth.package for example and then execute:
+    sudo eopeers --install /tmp/auth.package
 
-* install the peer package of each other authority. In auth1 execute:
-        sudo eopeers --show-mine
-* copy the output to a file in auth2 in /tmp/auth.package for example and then execute:
-        sudo eopeers --install /tmp/auth.package
-* Then do the same changing auth1<>auth2
+## Configure agora
 
-* Install nodejs - sudo apt-get install nodejs
+To create votes we use the code in agora-ciudadana via nodejs. You need to:
 
-* Clone agora-ciudadana inside the /vagrant/test directory
+1. Install nodejs
+    sudo apt-get install nodejs
 
-     cd /vagrant/test
-     git clone https://github.com/agoraciudadana/agora-ciudadana.git
-     cd agora-ciudadana
-     git checkout security 
+2. Clone agora-ciudadana inside the /vagrant/test directory
+    cd /vagrant/test
+    git clone https://github.com/agoraciudadana/agora-ciudadana.git
+    cd agora-ciudadana
+    git checkout security
 
-* Set up eo_test.py
+3. Activate the virtual environment (in the future, you start from this step)
+    source /home/eorchestra/venv/bin/activate
 
-    * Copy the certificates into the ssl_cert json fields in the authoritiesData variable in eo_test.py
-
-    * Activate the virtual environment
-
-      source venv/bin/activate in /home/eorchestra
-
-* Run
-
-    python eo_test.py --help
+4. use eotest
+    eotest --help
  
+# Troubleshooting
 
-Troubleshooting
-========
+* Invalid socket address
 
-* Invalid socket address: probably means there is an old instance of verificatum running. Running
-
+Probably means there is an old instance of verificatum running. Running the following command should kill the processes:
     sudo supervisorctl restart eorchestra
 
-    should kill these processes
+* Verificatum hangs
 
-* Verificatum hangs: did you forget to use ip’s instead of hostnames in the base_settings.py?
-
-    if so, change the file and restart eorchestra
-
+Did you forget to use ip’s instead of hostnames in the base_settings.py?  if so, change the file and restart eorchestra:
     sudo supervisorctl restart eorchestra
