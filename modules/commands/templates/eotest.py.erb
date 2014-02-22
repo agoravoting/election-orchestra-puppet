@@ -24,12 +24,15 @@ import codecs
 import traceback
 
 import os.path
+import os
 
 PK_TIMEOUT = 60
 TALLY_TIMEOUT = 3600
 CERT = '/srv/certs/selfsigned/cert.pem'
 KEY = '/srv/certs/selfsigned/key-nopass.pem'
 DATA_DIR = "/srv/eotest/data"
+
+os.chdir(DATA_DIR)
 
 # configuration
 localPort = 8000
@@ -50,7 +53,7 @@ def getTallyData(mypeerpkg):
         # 'election_id': electionId,
         "callback_url": "http://" + localServer + ":" + str(localPort) + "/receive_tally",
         "extra": [],
-        "votes_url": "http://" + localServer + ":" + str(localPort) + "/" + DATA_DIR + "/",
+        "votes_url": "http://" + localServer + ":" + str(localPort) + "/",
         "votes_hash": "sha512://"
     }
 
@@ -197,7 +200,6 @@ def writeVotes(votesData, fileName):
     # return hash
 
 def startServer(port):
-    # server = SocketServer.TCPServer(("",8000), RequestHandler)
     print("> Starting server on port " + str(port))
     server = ThreadingHTTPServer(('', port),RequestHandler)
     thread = threading.Thread(target = server.serve_forever)
