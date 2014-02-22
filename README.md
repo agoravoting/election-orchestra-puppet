@@ -11,7 +11,7 @@ Puppet-vagrant setup for election orchestra
 
 ### Download the repository
 
-*	git clone https://github.com/agoraciudadana/election-orchestra-puppet.git
+* git clone https://github.com/agoraciudadana/election-orchestra-puppet.git
 
 ### Install the puppet-python module
 
@@ -135,16 +135,6 @@ Sometimes you might need to update the system. You will probably have to downloa
 
 After that, what you will have to do is to create a backup (as explained previously), copy your backup somewhere safe, and then create a fresh election-orchestra-puppet installation and then restore there your backup.
 
-## Reset a tally
-
-Sometimes there's some kind of problem with a tally, and you need to launch it again. In that case, you need to reset it frist. You can either list the tallied election starting with the last one:
-
-* sudo reset-tally
-
-And reset a tally of an election by election-id:
-
-* sudo reset-tally <election-id>
-
 ## Automatic/manual modes
 
 There are two mode for working in election-orchestra: automatic and manual. This has to do with the election-orchestra requests from other peers, which are of two types: either create election public keys, or perform a tally.
@@ -163,11 +153,50 @@ Or change it:
 
 But the best way to do it is change it in manifests/init.pp and then executing puppet again (and restarting eorchestra with "supervisorctl restart eorchestra").
 
+## Execute a test tally
+
+If you have at least one peer package installed (and the peer has your peer package installed too), you can test your setup manually using eotest.
+
+First we have to create the election, which will use yours as the director authority and all the other configured (the one that "eopeers --list" show) as performers:
+
+* sudo eotest create
+
+This command will output the id of the created election. Now you need to create the encrypted votes, for example 10.000 votes:
+
+* sudo eotest encrypt <id> 10000
+
+And finally perform the tally:
+
+* sudo eotest tally <id>
+
 ## Watching the election-orchestra log
 
 It's quite useful to look at the log live to see what's happening. You can do that this way (you can stop watching with <Ctrl>+<C>):
 
 * sudo eolog
+
+## Reset a tally
+
+Sometimes there's some kind of problem with a tally, and you need to launch it again. In that case, you need to reset it frist. You can either list the tallied election starting with the last one:
+
+* sudo reset-tally
+
+And reset a tally of an election by election-id:
+
+* sudo reset-tally <election-id>
+
+## Troubleshooting
+
+* Invalid socket address
+
+Probably means there is an old instance of verificatum running. Running the following command should kill the processes:
+    sudo supervisorctl restart eorchestra
+
+* Verificatum hangs
+
+Did you forget to use ip’s instead of hostnames in the base_settings.py?  if so, change the file and restart eorchestra:
+    sudo supervisorctl restart eorchestra
+
 
 ## Accepting and reviewing tasks in manual mode:
 

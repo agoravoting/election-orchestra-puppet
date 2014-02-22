@@ -32,8 +32,11 @@ Each authority needs to recognize each other. To do so, you just follow the inst
 1. Get the peer package of the curren authority. Execute:
     sudo eopeers --show-mine
 
-2. copy the output to a file in the other authority in /tmp/auth.package for example and then execute:
+2. Copy the output to a file in the other authority in /tmp/auth.package for example and then execute:
     sudo eopeers --install /tmp/auth.package
+
+3. Reload nginx rules, so that it allows communications with the new peer:
+    sudo service nginx restart
 
 ## Configure agora
 

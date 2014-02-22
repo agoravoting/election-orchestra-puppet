@@ -42,10 +42,40 @@ class commands() {
         content => template('commands/eoauto.erb'),
     } ->
 
+    file { '/srv/eotests':
+        ensure  => directory,
+        owner => 'eorchestra',
+        group => 'users',
+    } ->
+
+    file { '/tmp/setupa.sh':
+        ensure  => file,
+        mode => 'a+x',
+        content => template('commands/setup_agora.sh.erb'),
+    } ->
+
+    exec { '/tmp/setupa.sh':
+        user => 'root',
+        logoutput => true,
+        creates => '/srv/eotests/agora-ciudadana',
+        timeout => 600,
+    } ->
+
+    file { '/srv/eotests/encrypt.js':
+        ensure  => file,
+        content => template('commands/encrypt.js.erb'),
+    } ->
+
     file { '/usr/bin/eotest':
         ensure  => file,
         mode    => 'a+x',
         content => template('commands/eotest.erb'),
+    } ->
+
+    file { '/usr/bin/eotest.py':
+        ensure  => file,
+        mode    => 'a+x',
+        content => template('commands/eotest.py.erb'),
     } ->
 
     file { '/usr/bin/eotasks':

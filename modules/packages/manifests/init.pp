@@ -8,4 +8,5 @@ class packages{
     include packages::java
     include packages::supervisor
     include packages::vim
+    include packages::node
 }
