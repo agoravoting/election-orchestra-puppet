@@ -7,4 +7,6 @@ export FRESTQ_SETTINGS="base_settings.py"
 # kill all those verificatums
 ps aux | grep java | grep -i verificatum | awk '{print $2}' | xargs kill -9
 
+ps aux | grep "/home/eorchestra/venv/bin/uwsgi --ini /home/eorchestra/election-orchestra/auth.ini" | awk '{print $2}' | xargs kill -9
+
 $HOME/venv/bin/uwsgi --ini $HOME/election-orchestra/auth.ini
