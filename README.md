@@ -155,7 +155,9 @@ But the best way to do it is change it in manifests/init.pp and then executing p
 
 ## Execute a test tally
 
-If you have at least one peer package installed (and the peer has your peer package installed too), you can test your setup manually using eotest.
+If you have at least one peer package installed (and the peer has your peer package installed too), you can test your setup manually using eotest. To do a complete test you can just do:
+
+* sudo eotest full --vmnd --vcount 100
 
 First we have to create the election, which will use yours as the director authority and all the other configured (the one that "eopeers --list" show) as performers:
 
@@ -163,7 +165,7 @@ First we have to create the election, which will use yours as the director autho
 
 This command will output the id of the created election. Now you need to create the encrypted votes, for example 10.000 votes:
 
-* sudo eotest encrypt <id> 10000
+* sudo eotest encrypt <id> --vmnd --vcount 100
 
 And finally perform the tally:
 

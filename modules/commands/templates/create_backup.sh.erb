@@ -39,6 +39,7 @@ then
     cp -rpxf /etc/eopeers $BACKUPD/eo_peers
 fi
 
+cp /etc/hosts $BACKUPD/hosts
 cp -rpxf /etc/nginx/conf.d $BACKUPD/nginx_conf
 cp -rpxf /etc/supervisor/conf.d $BACKUPD/supervisor_confd
 mkdir $BACKUPD/logs

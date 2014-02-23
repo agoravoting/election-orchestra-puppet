@@ -64,6 +64,7 @@ then
     eopeers --install /etc/eopeers/*
 fi
 
+cp $BACKUPD/hosts /etc/hosts
 cp $BACKUPD/nginx_conf/* /etc/nginx/conf.d
 cp $BACKUPD/supervisor_confd/* /etc/supervisor/conf.d
 
