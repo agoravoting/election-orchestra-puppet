@@ -32,6 +32,9 @@ CERT = '/srv/certs/selfsigned/cert.pem'
 KEY = '/srv/certs/selfsigned/key-nopass.pem'
 DATA_DIR = "/srv/eotest/data"
 
+if not os.path.exists(DATA_DIR):
+    os.makedirs(DATA_DIR)
+
 os.chdir(DATA_DIR)
 
 # configuration
