@@ -29,6 +29,7 @@ supervisorctl stop eorchestra
 service nginx stop
 
 cp -rpxf $BACKUPD/certs/* /srv/certs/
+cp /srv/certs/selfsigned/* /home/eorchestra/election-orchestra/certs/selfsigned/
 cp $BACKUPD/eo_base_settings.py $EO_DIR/eo_base_settings.py
 cp $BACKUPD/eo_db.sqlite $EO_DIR/db.sqlite
 
@@ -49,9 +50,9 @@ then
     chown eorchestra:users /srv/election-orchestra/server1/public/
 fi
 
-if [ -d  $BACKUPD/public/ ]
+if [ -d  $BACKUPD/eo_public/ ]
 then
-    cp -rpxf $BACKUPD/public/* /srv/election-orchestra/server1/public/
+    cp -rpxf $BACKUPD/eo_public/* /srv/election-orchestra/server1/public/
 fi
 
 if [ ! -d /etc/eopeers/ ]
@@ -69,6 +70,7 @@ cp $BACKUPD/nginx_conf/* /etc/nginx/conf.d
 cp $BACKUPD/supervisor_confd/* /etc/supervisor/conf.d
 
 # we do not restore logs, that's just stored for analysis
+
 
 cd
 rm -rf $BACKUPD
