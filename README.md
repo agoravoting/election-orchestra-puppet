@@ -137,7 +137,7 @@ After that, what you will have to do is to create a backup (as explained previou
 
 ## Automatic/manual modes
 
-There are two mode for working in election-orchestra: automatic and manual. This has to do with the election-orchestra requests from other peers, which are of two types: either create election public keys, or perform a tally.
+There are two modes for working in election-orchestra: automatic and manual. This has to do with the election-orchestra requests from other peers, which are of two types: either create election public keys, or perform a tally.
 
 The automatic mode accepts requests from allowed peers without requesting a confirmation from the authority administrator. Automatic mode is good for testing and also for public election authorities.
 
@@ -179,7 +179,7 @@ It's quite useful to look at the log live to see what's happening. You can do th
 
 ## Reset a tally
 
-Sometimes there's some kind of problem with a tally, and you need to launch it again. In that case, you need to reset it frist. You can either list the tallied election starting with the last one:
+Sometimes there's some kind of problem with a tally, and you need to launch it again. In that case, you need to reset it first. You can either list the tallied election, ordered by "last tallied is first listed":
 
     $ sudo reset-tally
 
