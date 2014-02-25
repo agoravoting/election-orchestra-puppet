@@ -11,13 +11,13 @@ Puppet-vagrant setup for election orchestra
 
 ### Download the repository
 
-    * git clone https://github.com/agoraciudadana/election-orchestra-puppet.git
+    $ git clone https://github.com/agoraciudadana/election-orchestra-puppet.git
 
 ### Install the puppet-python module
 
-    * cd election-orchestra-puppet/modules
-    * git clone git://github.com/stankevich/puppet-python.git python
-    * cd ..
+    $ cd election-orchestra-puppet/modules
+    $ git clone git://github.com/stankevich/puppet-python.git python
+    $ cd ..
 
 ### Edit your configuration
 
@@ -25,19 +25,19 @@ The basic configuration of your authority will be in election-orchestra-puppet/m
 
 ### Run
 
-    * vagrant up
+    $ vagrant up
 
 ### Accessing the vm
 
-    * vagrant ssh
-    * sudo -s
-    * su - eorchestra
+    $ vagrant ssh
+    $ sudo -s
+    $ su - eorchestra
 
 ### Applying puppet manually inside the vm
 
 Apply puppet manually with
 
-    * cd /vagrant; sudo puppet apply manifests/init.pp --modulepath modules/
+    $ cd /vagrant; sudo puppet apply manifests/init.pp --modulepath modules/
 
 
 
@@ -47,13 +47,13 @@ Apply puppet manually with
 
 First download election-orchestra-puppet
 
-    * git clone https://github.com/agoraciudadana/election-orchestra-puppet.git
+    $ git clone https://github.com/agoraciudadana/election-orchestra-puppet.git
 
 ### Install the puppet-python module
 
-    * cd election-orchestra-puppet/modules
-    * git clone git://github.com/stankevich/puppet-python.git python
-    * cd ..
+    $ cd election-orchestra-puppet/modules
+    $ git clone git://github.com/stankevich/puppet-python.git python
+    $ cd ..
 
 ### Edit your configuration
 
@@ -61,8 +61,8 @@ The basic configuration of your authority will be in election-orchestra-puppet/m
 
 ## Finish installation
 
-    * sudo sh shell/apt.sh
-    * sudo puppet apply manifests/init.pp --modulepath modules/
+    $ sudo sh shell/apt.sh
+    $ sudo puppet apply manifests/init.pp --modulepath modules/
 
 
 
@@ -76,46 +76,46 @@ To add another peers, ask them for their "peer package". This is a very simple f
 
 To generate your own peer package, execute:
 
-    * sudo eopeers --show-mine
+    $ sudo eopeers --show-mine
 
 Which will print something similar to:
 
-    * {
-    *   "ssl_certificate": "some certificate",
-    *   "ip_address": "1.1.1.1",
-    *   "hostname": "the-example-auth"
-    * }
+    {
+      "ssl_certificate": "some certificate",
+      "ip_address": "1.1.1.1",
+      "hostname": "the-example-auth"
+    }
 
 You can can copy that and send it via email or other means to your peers. They will also have to send their peer packages. If it's an already installed peer package which has changed the ip-address or ssl-certificate, those parameters will get updated.
 
 You can install an individual package file this way:
 
-    * sudo eopeers --install <path/to/peer.package>
+    $ sudo eopeers --install <path/to/peer.package>
 
 Which should output nothing if everything goes well.
 
 You can install a list of peer packages at once too:
 
-    * sudo eopeers --install <path/to/peer1.package> <path/to/peer1.package> ...
+    $ sudo eopeers --install <path/to/peer1.package> <path/to/peer1.package> ...
 
 Typically, someone you trust might send you a tarball with a bunch of peer packages. So what you would do is something like:
 
-    * tar zxf packages.tar.gz
-    * sudo eopeers --install packages/*.package
-    * sudo service nginx restart # restart nginx to apply changes
+    $ tar zxf packages.tar.gz
+    $ sudo eopeers --install packages/*.package
+    $ sudo service nginx restart # restart nginx to apply changes
 
 You can also list all installed packages:
 
-    * sudo eopeers --list
-    * Packages in /etc/eopeers:
-    *  * peer1
-    *  * peer2
-    *  * agoravoting
+    $ sudo eopeers --list
+    $ Packages in /etc/eopeers:
+      * peer1
+      * peer2
+      * agoravoting
 
 And remove a peer package by hostname:
 
-    * sudo eopeers --uninstall peer1
-    * sudo service nginx restart # restart nginx to apply changes
+    $ sudo eopeers --uninstall peer1
+    $ sudo service nginx restart # restart nginx to apply changes
 
 ## Managing backups
 
@@ -123,11 +123,11 @@ As an election authority, it's critical that you have an appropiate backup syste
 
 To create a new backup in /backups dir, just execute the following command:
 
-    * sudo create_backup.sh
+    $ sudo create_backup.sh
 
 To restore a backup, do something like for example (you need to change the path of the backup):
 
-    * sudo restore_backup.sh <path/to/backup>
+    $ sudo restore_backup.sh <path/to/backup>
 
 ## Update installation
 
@@ -145,11 +145,11 @@ Manual mode needs the confirmation from the election authority administrator. Th
 
 Note that the default mode in a deployment is automatic, and this can be changed in manifests/init.pp with the variable "auto_mode". You can also check its value with:
 
-    * sudo eoauto
+    $ sudo eoauto
 
 Or change it:
 
-    * sudo eoauto true
+    $ sudo eoauto true
 
 But the best way to do it is change it in manifests/init.pp and then executing puppet again (and restarting eorchestra with "supervisorctl restart eorchestra").
 
@@ -157,35 +157,35 @@ But the best way to do it is change it in manifests/init.pp and then executing p
 
 If you have at least one peer package installed (and the peer has your peer package installed too), you can test your setup manually using eotest. To do a complete test you can just do:
 
-    * sudo eotest full --vmnd --vcount 100
+    $ sudo eotest full --vmnd --vcount 100
 
 Alternatively, to do it step by step, first we have to create the election, which will use yours as the director authority and all the other configured (the one that "eopeers --list" show) as performers:
 
-    * sudo eotest create
+    $ sudo eotest create
 
 This command will output the id of the created election. Now you need to create the encrypted votes, for example 10.000 votes:
 
-    * sudo eotest encrypt <id> --vmnd --vcount 100
+    $ sudo eotest encrypt <id> --vmnd --vcount 100
 
 And finally perform the tally:
 
-    * sudo eotest tally <id>
+    $ sudo eotest tally <id>
 
 ## Watching the election-orchestra log
 
 It's quite useful to look at the log live to see what's happening. You can do that this way (you can stop watching with <Ctrl>+<C>):
 
-    * sudo eolog
+    $ sudo eolog
 
 ## Reset a tally
 
 Sometimes there's some kind of problem with a tally, and you need to launch it again. In that case, you need to reset it frist. You can either list the tallied election starting with the last one:
 
-    * sudo reset-tally
+    $ sudo reset-tally
 
 And reset a tally of an election by election-id:
 
-    * sudo reset-tally <election-id>
+    $ sudo reset-tally <election-id>
 
 ## Troubleshooting
 
@@ -204,7 +204,7 @@ Did you forget to use ip’s instead of hostnames in the base_settings.py?  if s
 
 To list pending tasks:
 
-    * sudo eotasks list
+    $ sudo eotasks list
     +----------+-----------------------------------+---------------------------+-----------------+-----------+-----------+----------------------------+
     | small id |             sender_url            |           action          |      queue      | task_type |   status  |        created_date        |
     +----------+-----------------------------------+---------------------------+-----------------+-----------+-----------+----------------------------+
@@ -214,7 +214,7 @@ To list pending tasks:
 
 To show information about a task:
 
-    * sudo eotasks show 86ba85d2
+    $ sudo eotasks show 86ba85d2
         * frestq.virtual_empty_task.internal.frestq - external (86ba85d2, finished)
         label: approve_election
         info_text:
@@ -251,9 +251,9 @@ To show information about a task:
 
 To approve it:
 
-    * sudo eotasks accept 86ba85d2
+    $ sudo eotasks accept 86ba85d2
 
 To reject it:
 
-    * sudo eotasks deny 86ba85d2
+    $ sudo eotasks deny 86ba85d2
 
