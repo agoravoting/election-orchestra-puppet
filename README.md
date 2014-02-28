@@ -43,6 +43,8 @@ Apply puppet manually with
 
 ## Standalone installation (no vagrant)
 
+You'll need an Ubuntu 12.04 LTS 64 bits fresh installed server, and then:
+
 ### Download the repository
 
 Install the dependencies and uninstall apache (with root superuser):
