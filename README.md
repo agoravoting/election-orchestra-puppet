@@ -45,7 +45,14 @@ Apply puppet manually with
 
 ### Download the repository
 
-First download election-orchestra-puppet
+Install the dependencies and uninstall apache (with root superuser):
+
+    # apt-get update
+    # aptitude install aptitude sudo git-core
+    # aptitude remove apache2 apache2-mpm-prefork apache2.2-common
+
+Download election-orchestra-puppet. You can do that with a typical unix user,
+just remember the download path:
 
     $ git clone https://github.com/agoraciudadana/election-orchestra-puppet.git
 
