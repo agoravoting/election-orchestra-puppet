@@ -18,7 +18,8 @@ VERIFICATUM_HINT_SERVER_PORT_RANGE = <%= @verificatum_hint_server_ports %>
 import os
 ROOT_PATH = os.path.split(os.path.abspath(__file__))[0]
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:///%s/db.sqlite' % ROOT_PATH
+# SQLALCHEMY_DATABASE_URI = 'sqlite:///%s/db.sqlite' % ROOT_PATH
+SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2:///eorchestra'
 
 PRIVATE_DATA_PATH = os.path.join(ROOT_PATH, 'datastore/private')
 PUBLIC_DATA_PATH = '/srv/election-orchestra/server1/public'

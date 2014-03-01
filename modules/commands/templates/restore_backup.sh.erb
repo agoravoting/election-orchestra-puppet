@@ -31,7 +31,13 @@ service nginx stop
 cp -rpxf $BACKUPD/certs/* /srv/certs/
 cp /srv/certs/selfsigned/* /home/eorchestra/election-orchestra/certs/selfsigned/
 cp $BACKUPD/eo_base_settings.py $EO_DIR/eo_base_settings.py
-cp $BACKUPD/eo_db.sqlite $EO_DIR/db.sqlite
+# cp $BACKUPD/eo_db.sqlite $EO_DIR/db.sqlite
+# backup existing just in case
+su - orchestra -c "pg_dump eorchestra" > /tmp/eo_pre_restore_db.sql
+# restore
+su - postgres -c "dropdb eorchestra"
+su - postgres -c "createdb -O eorchestra eorchestra"
+su - postgres -c "psql eorchestra < $BACKUPD/eo_db.sql"
 
 if [ ! -d $EO_DIR/datastore/private/ ]
 then

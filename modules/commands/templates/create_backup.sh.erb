@@ -21,8 +21,8 @@ supervisorctl stop eorchestra
 
 cp -rpxf /srv/certs/ $BACKUPD/certs
 cp $EO_DIR/base_settings.py $BACKUPD/eo_base_settings.py
-cp $EO_DIR/db.sqlite $BACKUPD/eo_db.sqlite
-
+# cp $EO_DIR/db.sqlite $BACKUPD/eo_db.sqlite
+su - eorchestra -c "pg_dump eorchestra" > $BACKUPD/eo_db.sql
 
 if [ ! $(ls /srv/election-orchestra/server1/public/ | wc -l) -eq "0" ]
 then

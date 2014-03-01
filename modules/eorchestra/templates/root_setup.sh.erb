@@ -5,3 +5,5 @@ if [ $? -eq 1 ]
 then
     echo "<%= @private_ipaddress %> <%= @host %>" >> /etc/hosts
 fi
+su - postgres -c "createuser -R -S -D eorchestra"
+su - postgres -c "createdb -O eorchestra eorchestra"
