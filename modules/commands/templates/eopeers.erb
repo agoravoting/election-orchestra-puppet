@@ -116,7 +116,7 @@ def showmine():
         ssl_certificate =  f.read()
     us = {
         "ssl_certificate": ssl_certificate,
-        "ip_address": "<%= @ipaddress %>",
+        "ip_address": "<%= @public_ipaddress %>",
         "hostname": "<%= @host %>"
     }
     print(json.dumps(us))

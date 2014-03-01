@@ -61,22 +61,35 @@ def getTallyData(mypeerpkg):
     }
 
 
-def grabAuthData(eopeers, mypeerpkg):
+def grabAuthData(eopeers_dir, mypeerpkg, eopeers):
     mypeerpkg = getPeerPkg(mypeerpkg)
 
-    if not os.path.isdir(eopeers):
-        raise Exception("%s is not a directory" % eopeers)
+    if not os.path.isdir(eopeers_dir):
+        print("%s is not a directory" % eopeers_dir)
+        exit(1)
 
-    l = os.listdir(eopeers)
+    l = os.listdir(eopeers_dir)
     if len(l) == 0:
-        raise Exception("%s is an empty directory" % eopeers)
+        print("%s is an empty directory" % eopeers_dir)
+        exit(1)
 
     auths_data = [mypeerpkg]
-    for fname in os.listdir(eopeers):
-        path = os.path.join(eopeers, fname)
+    for fname in os.listdir(eopeers_dir):
+        path = os.path.join(eopeers_dir, fname)
         with open(path, 'r') as f:
             auths_data.append(json.loads(f.read()))
 
+    if eopeers is not None:
+        if mypeerpkg['hostname'] not in eopeers:
+            eopeers.append(mypeerpkg['hostname'])
+        auths_data = [auth for auth in auths_data if auth['hostname'] in eopeers]
+        hostnames = [a['hostname'] for a in auths_data]
+        if len(hostnames) != len(eopeers):
+            not_found = str(list(set(eopeers) - set(hostnames)))
+            print("some peers were not found: %s" % not_found)
+            exit(1)
+
+    print("\nusing the following authorities:")
     i = 1
     ret_data = []
     for auth in auths_data:
@@ -85,11 +98,16 @@ def grabAuthData(eopeers, mypeerpkg):
             "orchestra_url": "https://%s:5000/api/queues" % auth["hostname"],
             "ssl_cert": auth["ssl_certificate"]
         })
+        if i == 1:
+            print(" 1. %s (this is us, acting as orchestra "
+                  "director)" % auth['hostname'])
+        else:
+            print(" %d. %s" % (i, auth['hostname']))
         i += 1
+    print("\n")
     return ret_data
 
-def getStartData(eopeers, mypeerpkg):
-    authorities = grabAuthData(eopeers, mypeerpkg)
+def getStartData(eopeers_dir, mypeerpkg, eopeers):
     mypeerpkg = getPeerPkg(mypeerpkg)
     return {
         # "election_id": electionId,
@@ -115,7 +133,7 @@ def getStartData(eopeers, mypeerpkg):
         }],
         "voting_start_date": "2013-12-06T18:17:14.457000",
         "voting_end_date": "2013-12-09T18:17:14.457000",
-        "authorities": grabAuthData(eopeers, mypeerpkg)
+        "authorities": grabAuthData(eopeers_dir, mypeerpkg, eopeers)
     }
 
 # code
@@ -287,7 +305,7 @@ def create(args):
     electionId = args.electionId
     startServer(localPort)
     mypeerpkg = getPeerPkg(args.mypeerpkg)
-    startData = getStartData(args.eopeers, args.mypeerpkg)
+    startData = getStartData(args.eopeers_dir, args.mypeerpkg, args.peers)
     startUrl = 'https://%s:5000/public_api/election' % mypeerpkg["hostname"]
     startElection(electionId, startUrl, startData)
     publicKey = waitForPublicKey()
@@ -402,7 +420,8 @@ def main(argv):
 encrypt <electionId>: encrypts votes
 tally <electionId>: launches tally
 full: does the whole process''')
-    parser.add_argument('--eopeers', help='directory with the eopeers packages to use as authorities', default = '/etc/eopeers/')
+    parser.add_argument('--eopeers-dir', help='directory with the eopeers packages to use as authorities', default = '/etc/eopeers/')
+    parser.add_argument('--peers', nargs='+', default=None, help='list of authorities to pair with. defaults to all of them')
     parser.add_argument('--mypeerpkg', help='path to my peer package. if empty, calls to eopeers --show-mine', default = None)
     parser.add_argument('--vfile', help='json file to read votes from', default = 'votes.json')
     parser.add_argument('--vcount', help='number of votes to generate (generates duplicates if more than in json file)', type=int, default = 0)

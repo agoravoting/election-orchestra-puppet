@@ -18,11 +18,11 @@ then
     python app.py --tasks --filters "task_type=external" "status=executing" 2>/dev/null
 elif [ "$1" == 'show' ]
 then
-    python app.py --show-external '$2' 2>/dev/null
+    python app.py --show-external "$2" 2>/dev/null
 elif [ "$1" == 'accept' ]
 then
-    python app.py --finish '$2' '{"status": "accepted"}' 2>/dev/null
+    python app.py --finish "$2" '{"status": "accepted"}' 2>/dev/null
 elif [ "$1" == 'deny' ]
 then
-    python app.py --finish '$2' '{"status": "denied"}' 2>/dev/null
+    python app.py --finish "$2" '{"status": "denied"}' 2>/dev/null
 fi
