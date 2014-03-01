@@ -5,9 +5,9 @@ if [ $? -eq 1 ]
 then
     echo "<%= @private_ipaddress %> <%= @host %>" >> /etc/hosts
 fi
-dbexists=$(su - postgres -c "psql -l | grep eorchestra | wc -l")
-if [ $? -eq 1 ]
+exists=$(su - postgres -c "psql -l | grep eorchestra | wc -l")
+if [ $exists -ne 1 ]
 then
-	su - postgres -c "createuser -R -S -D eorchestra"
-	su - postgres -c "createdb -O eorchestra eorchestra"
+        su - postgres -c "createuser -R -S -D eorchestra"
+        su - postgres -c "createdb -O eorchestra eorchestra"
 fi
