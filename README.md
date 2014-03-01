@@ -202,11 +202,20 @@ And reset a tally of an election by election-id:
 
 Probably means there is an old instance of verificatum running. Running the following command should kill the processes:
     sudo supervisorctl restart eorchestra
+	
+If you're using amazon or some service where the internal private ip address is not the same as the public ip address, setup your ip 
+public/private addresses accordingly in manifests/init.pp
 
 * Verificatum hangs
 
 Did you forget to use ip’s instead of hostnames in the base_settings.py?  if so, change the file and restart eorchestra:
     sudo supervisorctl restart eorchestra
+	
+Sometimes there are additional entries in /etc/hosts that need to be commented, for example
+
+# 127.0.1.1     agoravoting-eovm
+
+needs to be commented so that the correct entry (eg 192.168.50.2 agoravoting-eovm) takes effect
 
 
 ## Accepting and reviewing tasks in manual mode:
