@@ -213,7 +213,7 @@ Did you forget to use ip’s instead of hostnames in the base_settings.py?  if s
 	
 Sometimes there are additional entries in /etc/hosts that need to be commented, for example
 
-# 127.0.1.1     agoravoting-eovm
+127.0.1.1     agoravoting-eovm
 
 needs to be commented so that the correct entry (eg 192.168.50.2 agoravoting-eovm) takes effect
 
