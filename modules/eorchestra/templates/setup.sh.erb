@@ -11,6 +11,7 @@ cd $EORCHESTRA_DIR/frestq
 python setup.py install
 cd $EORCHESTRA_DIR/election-orchestra
 pip install -r requirements.txt
+cp -f /tmp/base_settings.py base_settings.py
 export FRESTQ_SETTINGS=base_settings.py 
 python app.py --createdb
 

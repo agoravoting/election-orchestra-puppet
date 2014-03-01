@@ -5,18 +5,6 @@ class eorchestra($port = '5000', $host, $verificatum_server_ports, $verificatum_
     require packages
     require verificatum
 
-    file { '/tmp/esetup.sh':
-        ensure  => file,
-        mode => 'a+x',
-        content => template('eorchestra/setup.sh.erb'),
-    } ->
-    exec { '/tmp/esetup.sh':
-        user => 'eorchestra',
-        logoutput => true,
-        creates => '/home/eorchestra/election-orchestra',
-        require => [Package['git'], User['eorchestra'], Python::Virtualenv['/home/eorchestra/venv']],
-        timeout => 600,
-    } ->
     file { '/tmp/rsetup.sh':
         ensure  => file,
         mode => 'a+x',
@@ -32,16 +20,29 @@ class eorchestra($port = '5000', $host, $verificatum_server_ports, $verificatum_
         logoutput => true,
         timeout => 10,
     } ->
+	# need to do this now so that this file is available before running setup.sh.erb
+	file {'/tmp/base_settings.py':
+        ensure  => file,
+        content => template('eorchestra/base_settings.py.erb'),
+        owner => 'eorchestra',
+    } ->
+	file { '/tmp/esetup.sh':
+        ensure  => file,
+        mode => 'a+x',
+        content => template('eorchestra/setup.sh.erb'),
+    } ->
+    exec { '/tmp/esetup.sh':
+        user => 'eorchestra',
+        logoutput => true,
+        creates => '/home/eorchestra/election-orchestra',
+        require => [Package['git'], User['eorchestra'], Python::Virtualenv['/home/eorchestra/venv']],
+        timeout => 600,
+    } ->
     file {'/home/eorchestra/election-orchestra/auth.ini':
         ensure  => file,
         content => template('eorchestra/auth.ini.erb'),
         owner => 'eorchestra',
     } -> 
-    file {'/home/eorchestra/election-orchestra/base_settings.py':
-        ensure  => file,
-        content => template('eorchestra/base_settings.py.erb'),
-        owner => 'eorchestra',
-    } ->
     file {'/home/eorchestra/launch.sh':
         ensure  => file,
         mode => 'a+x',
