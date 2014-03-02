@@ -36,7 +36,7 @@ cp $BACKUPD/eo_base_settings.py $EO_DIR/eo_base_settings.py
 su - orchestra -c "pg_dump eorchestra" > /tmp/eo_pre_restore_db.sql
 # restore
 su - postgres -c "dropdb eorchestra"
-su - postgres -c "createdb -O eorchestra eorchestra"
+su - postgres -c "createdb -E utf-8 -O eorchestra eorchestra"
 su - postgres -c "psql eorchestra < $BACKUPD/eo_db.sql"
 
 if [ ! -d $EO_DIR/datastore/private/ ]
