@@ -9,5 +9,5 @@ exists=$(su - postgres -c "psql -l | grep eorchestra | wc -l")
 if [ $exists -ne 1 ]
 then
         su - postgres -c "createuser -R -S -D eorchestra"
-        su - postgres -c "createdb -O eorchestra eorchestra"
+        su - postgres -c "createdb -E utf-8 -O eorchestra eorchestra"
 fi
