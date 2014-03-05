@@ -7,14 +7,6 @@ class eorchestra($port = '5000', $host, $verificatum_server_ports, $verificatum_
 
     # --- database -----------------------------------------------------------
 
-    # workaround for http://projects.puppetlabs.com/issues/4695
-    # when PostgreSQL is installed with SQL_ASCII encoding instead of UTF8
-    exec { 'utf8 postgres':
-        command => 'pg_dropcluster --stop 9.1 main ; pg_createcluster --start --locale C.UTF-8 9.1 main',
-        user    => 'postgres',
-        unless  => 'psql -t -c "\l" | grep template1 | grep -q UTF',
-    } ->
-
     file { '/tmp/rsetup.sh':
         ensure  => file,
         mode => 'a+x',
