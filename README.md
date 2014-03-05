@@ -58,12 +58,6 @@ just remember the download path:
 
     $ git clone https://github.com/agoraciudadana/election-orchestra-puppet.git
 
-### Install the puppet-python module
-
-    $ cd election-orchestra-puppet/modules
-    $ git clone git://github.com/stankevich/puppet-python.git python
-    $ cd ..
-
 ### Edit your configuration
 
 The basic configuration of your authority will be in election-orchestra-puppet/manifests/init.pp. Take a look at it and edit accordingly.
