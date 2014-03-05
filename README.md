@@ -68,6 +68,22 @@ just remember the download path:
 
 The basic configuration of your authority will be in election-orchestra-puppet/manifests/init.pp. Take a look at it and edit accordingly.
 
+Some important notes about the configuration parameters:
+ * Usually both "private_ipaddress" and "public_ipaddress" variables should be the same. But in Amazon AWS the public ip address is not directly addresable by the machine; it's addresable with other ip address. Only in this kind of case the private ip address should not be the same as the public one. In NO case the private ip address should be set as "127.0.0.1.
+
+ * In the case of Amazon AWS, you also need to setup the cloud firewall (which is NOT the internal machine firewall, but one setup externally throught "Security Groups") to allow connections on the TCP/UDP ports specified in the configuration. This might also be needed in other similar setups. Here is a list of the ports used, specifed in the manifests/init.pp configuration file:
+  - "port" is 5000 by default and uses TCP connections
+  - "verificatum_server_ports" is 4081 by default (4081-4083 but only first is curently used), and uses TCP connections
+  - "verificatum_hint_server_ports" is 8081 by default (8081-8083 but only first is curently used), and uses UDP connections
+
+ * In general, there's usually no reason/need to change the default ports configuration in settings.
+
+ * The "hostname" is used as the name other authorities will address this machine. For improved security, election-orchestra-puppet does not rely on DNS information for ip address resolution, but uses the information setup with the keys "hostname" and "public_ipaddress" and via "eopeers" command for adress resolution. The name of the machine should just be an addresable machine name like "agoravoting-whatever" or "pepito".
+
+ * The "backup_password" is stored in /root/.backup_password and is used to automatically encrypt/decrypt with gpg when creating or restoring backups. Backups are explained explained below in a subsection.
+
+ * The "auto_mode" is explained later on in a subsection of this document. If "auto_mode" is set to true, the two operations "create publickey for an election" and "tally an election" will be performed automatically without the need of the confirmation by the authority operator. This is set true by default because it's good for testing, but for important election and improved security you should set it to false as explained below.
+
 ### Finish installation
 
     $ sudo sh shell/apt.sh
@@ -198,24 +214,27 @@ And reset a tally of an election by election-id:
 
 ## Troubleshooting
 
+If you have problems, you should take a look at the log executing the "sudo eolog" command. You'll see a quite verbose output. Here is a list of the typical problems and their usual solutions:
+
 * Invalid socket address
 
 Probably means there is an old instance of verificatum running. Running the following command should kill the processes:
     sudo supervisorctl restart eorchestra
 	
-If you're using amazon or some service where the internal private ip address is not the same as the public ip address, setup your ip 
-public/private addresses accordingly in manifests/init.pp
+If you're using amazon or some service where the internal private ip address is not the same as the public ip address, setup your ip public/private addresses accordingly in manifests/init.pp
 
 * Verificatum hangs
 
 Did you forget to use ip’s instead of hostnames in the base_settings.py?  if so, change the file and restart eorchestra:
     sudo supervisorctl restart eorchestra
-	
+
 Sometimes there are additional entries in /etc/hosts that need to be commented, for example
 
-127.0.1.1     agoravoting-eovm
+    127.0.1.1     agoravoting-eovm
 
-needs to be commented so that the correct entry (eg 192.168.50.2 agoravoting-eovm) takes effect
+Needs to be commented so that the correct entry (eg 192.168.50.2 agoravoting-eovm) takes effect
+
+If you're using amazon or some service where the internal private ip address is not the same as the public ip address, setup your ip  public/private addresses accordingly in manifests/init.pp
 
 
 ## Accepting and reviewing tasks in manual mode:
