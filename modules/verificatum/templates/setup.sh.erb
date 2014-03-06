@@ -6,6 +6,9 @@ cd $EORCHESTRA_DIR
 sudo -u eorchestra git clone https://github.com/agoraciudadana/verificatum
 cd $EORCHESTRA_DIR/verificatum
 sudo -u eorchestra make clean
+# TODO: we need a real fix for this, in the future when we have more time..
+rm verificatum/classes/verificatum/protocol/Protocol.class
+rm verificatum/classes/verificatum/protocol/mixnet/MixNetElGamalInterfaceJSON.class
 sudo -u eorchestra ./configure --enable-jgmpmee --enable-jecn
 sudo -u eorchestra make
 # fix wikstrom special o screwing things up
