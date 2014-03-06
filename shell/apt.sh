@@ -19,8 +19,8 @@ add-apt-repository -y ppa:webupd8team/java
 apt-get -y install aptitude
 
 # puppet-python module
-PATH_TO_FILE=$(readlink /proc/$$/fd/255)
-cd $(dirname "$PATH_TO_FILE")/../modules
+SCRIPT_PATH=$(readlink -f "$0")
+cd $(dirname $SCRIPT_PATH)/../modules
 if [ ! -d python ]
 then
     git clone git://github.com/stankevich/puppet-python.git python
