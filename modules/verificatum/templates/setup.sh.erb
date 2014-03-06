@@ -5,7 +5,8 @@ EORCHESTRA_DIR=/home/eorchestra
 cd $EORCHESTRA_DIR 
 sudo -u eorchestra git clone https://github.com/agoraciudadana/verificatum
 cd $EORCHESTRA_DIR/verificatum
-sudo -u eorchestra ./configure
+sudo -u eorchestra make clean
+sudo -u eorchestra ./configure --enable-jgmpmee --enable-jecn
 sudo -u eorchestra make
 # fix wikstrom special o screwing things up
 # http://stackoverflow.com/questions/361975/setting-the-default-java-character-encoding/623036#623036
