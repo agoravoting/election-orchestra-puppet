@@ -3,8 +3,13 @@
 # for up to date version of nginx
 # http://danielmiessler.com/blog/upgrading-to-nginx-1-4-x-on-ubuntu#.UkyqAYYerA0
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62
-echo 'deb http://nginx.org/packages/ubuntu/ precise nginx' >> /etc/apt/sources.list
-echo 'deb-src http://nginx.org/packages/ubuntu/ precise nginx' >> /etc/apt/sources.list
+
+GREP=$(grep 'http://nginx.org/packages/ubuntu/ precise nginx' /etc/apt/sources.list)
+if [ "$GREP" == "" ]
+then
+    echo 'deb http://nginx.org/packages/ubuntu/ precise nginx' >> /etc/apt/sources.list
+    echo 'deb-src http://nginx.org/packages/ubuntu/ precise nginx' >> /etc/apt/sources.list
+fi
 apt-get update
 # http://stackoverflow.com/questions/13018626/add-apt-repository-not-found
 apt-get -y install python-software-properties htop sudo aptitude git
@@ -14,8 +19,12 @@ add-apt-repository -y ppa:webupd8team/java
 apt-get -y install aptitude
 
 # puppet-python module
-cd /vagrant/modules
-git clone git://github.com/stankevich/puppet-python.git python
+PATH_TO_FILE=$(readlink /proc/$$/fd/255)
+cd $(dirname "$PATH_TO_FILE")/../modules
+if [ ! -d python ]
+then
+    git clone git://github.com/stankevich/puppet-python.git python
+fi
 
 wget -qO /tmp/puppetlabs-release-precise.deb https://apt.puppetlabs.com/puppetlabs-release-precise.deb
 
