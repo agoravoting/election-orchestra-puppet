@@ -24,6 +24,9 @@ rm /tmp/puppetlabs-release-precise.deb
 
 aptitude update
 
+locale-gen en_GB.UTF-8
+update-locale
+
 echo Installing puppet
 aptitude install -y puppet
 echo "Puppet installed!"
