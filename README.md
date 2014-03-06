@@ -50,7 +50,7 @@ You'll need an Ubuntu 12.04 LTS 64 bits fresh installed server, and then:
 Install the dependencies and uninstall apache (with root superuser):
 
     # apt-get update
-    # apt-get install aptitude sudo git-core
+    # apt-get install -y aptitude sudo git-core
     # aptitude remove apache2 apache2-mpm-prefork apache2.2-common
 
 Download election-orchestra-puppet. You can do that with a typical unix user,

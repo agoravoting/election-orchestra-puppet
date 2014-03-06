@@ -3,6 +3,9 @@ class packages::postgresql  {
     package { [ 'postgresql', 'postgresql-server-dev-all' ]:
         ensure => 'installed',
     } ->
+    service { 'postgresql':
+        ensure  => running,
+    } ->
 	# workaround for http://projects.puppetlabs.com/issues/4695
     # when PostgreSQL is installed with SQL_ASCII encoding instead of UTF8
     exec { 'utf8 postgres':
@@ -10,8 +13,5 @@ class packages::postgresql  {
         user    => 'postgres',
         unless  => 'psql -t -c "\l" | grep template1 | grep -q UTF',
 		provider => shell
-    } ->
-    service { 'postgresql':
-        ensure  => running,
     }
 }
