@@ -13,15 +13,9 @@ Puppet-vagrant setup for election orchestra
 
     $ git clone https://github.com/agoraciudadana/election-orchestra-puppet.git
 
-### Install the puppet-python module
-
-    $ cd election-orchestra-puppet/modules
-    $ git clone git://github.com/stankevich/puppet-python.git python
-    $ cd ..
-
 ### Edit your configuration
 
-The basic configuration of your authority will be in election-orchestra-puppet/manifests/init.pp. Take a look at it and edit accordingly.
+The basic configuration of your authority will be in election-orchestra-puppet/manifests/init.pp. Take a look at it and edit accordingly. See more information below in the "Edit Configuration section" for Standalone installation (the configuration settings are the same).
 
 ### Run
 
@@ -57,6 +51,7 @@ Download election-orchestra-puppet. You can do that with a typical unix user,
 just remember the download path:
 
     $ git clone https://github.com/agoraciudadana/election-orchestra-puppet.git
+    $ cd election-orchestra-puppet
 
 ### Edit your configuration
 
