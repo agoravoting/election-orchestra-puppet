@@ -4,12 +4,8 @@
 # http://danielmiessler.com/blog/upgrading-to-nginx-1-4-x-on-ubuntu#.UkyqAYYerA0
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62
 
-GREP=$(grep 'http://nginx.org/packages/ubuntu/ precise nginx' /etc/apt/sources.list)
-if [ "$GREP" == "" ]
-then
-    echo 'deb http://nginx.org/packages/ubuntu/ precise nginx' >> /etc/apt/sources.list
-    echo 'deb-src http://nginx.org/packages/ubuntu/ precise nginx' >> /etc/apt/sources.list
-fi
+grep 'http://nginx.org/packages/ubuntu/ precise nginx' /etc/apt/sources.list || echo 'deb http://nginx.org/packages/ubuntu/ precise nginx' >> /etc/apt/sources.list
+
 apt-get update
 # http://stackoverflow.com/questions/13018626/add-apt-repository-not-found
 apt-get -y install python-software-properties htop sudo aptitude git
