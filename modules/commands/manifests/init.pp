@@ -88,5 +88,11 @@ class commands() {
         ensure  => file,
         mode    => 'a+x',
         content => template('commands/eotasks.erb'),
+    } ->
+	
+	file { '/usr/bin/eotasks.py':
+        ensure  => file,
+        mode    => 'a+x',
+        content => template('commands/eotasks.py.erb'),
     }
 }

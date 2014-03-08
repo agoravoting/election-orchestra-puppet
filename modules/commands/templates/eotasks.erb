@@ -8,21 +8,9 @@ fi
 EORCHESTRA_DIR=/home/eorchestra
 VENV_DIR=$EORCHESTRA_DIR/venv
 
-cd $EORCHESTRA_DIR
 source $VENV_DIR/bin/activate
-cd election-orchestra
-export FRESTQ_SETTINGS="base_settings.py"
+export FRESTQ_SETTINGS=$EORCHESTRA_DIR/election-orchestra/base_settings.py
+export PYTHONPATH=/home/eorchestra/frestq
+cd /vagrant
 
-if [ "$1" == "list" ]
-then
-    python app.py --tasks --filters "task_type=external" "status=executing" 2>/dev/null
-elif [ "$1" == 'show' ]
-then
-    python app.py --show-external "$2" 2>/dev/null
-elif [ "$1" == 'accept' ]
-then
-    python app.py --finish "$2" '{"status": "accepted"}' 2>/dev/null
-elif [ "$1" == 'deny' ]
-then
-    python app.py --finish "$2" '{"status": "denied"}' 2>/dev/null
-fi
+/usr/bin/eotasks.py $*
