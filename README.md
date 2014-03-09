@@ -266,5 +266,7 @@ To reject it:
     $ sudo eotasks --reject 0971e535
 
 To show full debugging information about a task:
+	
 	$ sudo eotasks --show-full 0971e535
+	
 	... a lot of text here ..
