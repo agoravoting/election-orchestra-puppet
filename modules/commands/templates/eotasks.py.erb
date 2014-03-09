@@ -32,7 +32,6 @@ def print_task_list(tasks):
     table = PrettyTable(['small id', 'label', 'election', 'sender_url', 'created_date'])
 
     for task in tasks:
-          print(task.id)
           election = task.input_data['Title']
           question = ''
 
@@ -84,7 +83,8 @@ target_parser.add_argument("-n", "--limit", help="limit number of results",
 parser = argparse.ArgumentParser()
 parser.add_argument("--list", help="list last tasks",
                     action="store_true")
-parser.add_argument("--show", help="show tasks")
+parser.add_argument("--show", help="show task")
+parser.add_argument("--show-full", help="show task detail")
 parser.add_argument("--accept", help="accept task")
 parser.add_argument("--reject", help="reject task")
 pargs = parser.parse_args()
@@ -101,6 +101,9 @@ elif pargs.show:
     else:
         task = tasks[0]
         print_task(task)
+elif pargs.show_full:
+	target_pargs = target_parser.parse_args(["--show-external", pargs.show_full])
+	show_external_task(target_pargs)
 elif pargs.accept:
     target_pargs = target_parser.parse_args(["--finish", pargs.accept, '{"status": "accepted"}'])
     finish_task(target_pargs)
