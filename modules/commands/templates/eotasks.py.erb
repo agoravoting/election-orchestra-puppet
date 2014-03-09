@@ -103,7 +103,12 @@ elif pargs.show:
         print_task(task)
 elif pargs.show_full:
 	target_pargs = target_parser.parse_args(["--show-external", pargs.show_full])
-	show_external_task(target_pargs)
+	tasks = get_external_task(target_pargs)
+	if not tasks:
+		print "task %s not found" % pargs.show
+	else:
+		task = tasks[0]
+		print(json.dumps(tasks[0].input_data, indent=4))
 elif pargs.accept:
     target_pargs = target_parser.parse_args(["--finish", pargs.accept, '{"status": "accepted"}'])
     finish_task(target_pargs)
