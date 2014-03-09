@@ -225,10 +225,9 @@ Needs to be commented so that the correct entry (eg 192.168.50.2 agoravoting-eov
 
 If you're using amazon or some service where the internal private ip address is not the same as the public ip address, setup your ip  public/private addresses accordingly in manifests/init.pp
 
-
 ## Accepting and reviewing tasks in manual mode:
 
-To list pending tasks:
+To list pending tasks
 
     $ sudo eotasks --list
 	+----------+------------------+---------------+------------------------------------------+----------------------------+
@@ -236,8 +235,17 @@ To list pending tasks:
 	+----------+------------------+---------------+------------------------------------------+----------------------------+
 	| 0971e535 | approve_election | Test election | https://agoravoting-eovm:5000/api/queues | 2014-03-09 02:49:57.768612 |
 	+----------+------------------+---------------+------------------------------------------+----------------------------+
+	
+The above example shows election creation task, as seen in the 'label' text. The following shows an election tally task:
 
-To show information about a task:
+	$ sudo eotasks --list
+	+----------+------------------------+---------------+------------------------------------------+----------------------------+
+	| small id |         label          |    election   |                sender_url                |        created_date        |
+	+----------+------------------------+---------------+------------------------------------------+----------------------------+
+	| d88dc9bc | approve_election_tally | Test election | https://agoravoting-eovm:5000/api/queues | 2014-03-09 03:04:20.590614 |
+	+----------+------------------------+---------------+------------------------------------------+----------------------------+
+
+To show more information about a task:
 
     $ sudo eotasks --show 0971e535
 	+--------------+------------------------------------------+
@@ -248,11 +256,6 @@ To show information about a task:
 	|  sender_url  | https://agoravoting-eovm:5000/api/queues |
 	| created_date |        2014-03-09 02:49:57.768612        |
 	+--------------+------------------------------------------+
-	
-	
-To show full debugging information about a task:
-	$ sudo eotasks --show-full 0971e535
-	... a lot of text here ..
 
 To approve it:
 
@@ -262,3 +265,6 @@ To reject it:
 
     $ sudo eotasks --reject 0971e535
 
+To show full debugging information about a task:
+	$ sudo eotasks --show-full 0971e535
+	... a lot of text here ..
