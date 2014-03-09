@@ -11,6 +11,8 @@ Vagrant.configure("2") do |config|
     if ENV['AWS_SECRET_ACCESS_KEY'].nil?
         config.vm.box = "precise64"
         config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+        config.vm.box_download_checksum = "9a8bdea70e1d35c1d7733f587c34af07491872f2832f0bc5f875b536520ec17e"
+        config.vm.box_download_checksum_type = "sha256"
 
         config.vm.network "forwarded_port", guest: 5000, host: 5000
         config.vm.network "forwarded_port", guest: 4081, host: 4081
