@@ -12,7 +12,7 @@ apt-get -y install python-software-properties htop sudo aptitude git
 # java
 # http://www.webupd8.org/2012/01/install-oracle-java-jdk-7-in-ubuntu-via.html
 add-apt-repository -y ppa:webupd8team/java
-apt-get -y install aptitude
+apt-get -y install aptitude realpath
 
 # puppet-python module
 SCRIPT_PATH=$(readlink -f "$0")
@@ -26,6 +26,13 @@ wget -qO /tmp/puppetlabs-release-precise.deb https://apt.puppetlabs.com/puppetla
 
 dpkg -i /tmp/puppetlabs-release-precise.deb
 rm /tmp/puppetlabs-release-precise.deb
+
+echo "saving path to manifests/init.pp so that backup script knows.."
+SCRIPT_PATH=$(readlink -f "$0")
+INIT_PATH=$(dirname $SCRIPT_PATH)/../manifests/init.pp
+INIT_PATH=$(realpath $INIT_PATH)
+
+echo "$INIT_PATH" > /root/.eo_puppet_manifests_path
 
 aptitude update
 
