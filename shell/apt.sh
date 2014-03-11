@@ -8,7 +8,7 @@ grep 'http://nginx.org/packages/ubuntu/ precise nginx' /etc/apt/sources.list || 
 
 apt-get update
 # http://stackoverflow.com/questions/13018626/add-apt-repository-not-found
-apt-get -y install python-software-properties htop sudo aptitude git
+apt-get -y install python-software-properties software-properties-common htop sudo aptitude git
 # java
 # http://www.webupd8.org/2012/01/install-oracle-java-jdk-7-in-ubuntu-via.html
 add-apt-repository -y ppa:webupd8team/java
@@ -28,6 +28,7 @@ dpkg -i /tmp/puppetlabs-release-precise.deb
 rm /tmp/puppetlabs-release-precise.deb
 
 echo "saving path to manifests/init.pp so that backup script knows.."
+
 SCRIPT_PATH=$(readlink -f "$0")
 INIT_PATH=$(dirname $SCRIPT_PATH)/../manifests/init.pp
 INIT_PATH=$(realpath $INIT_PATH)
