@@ -75,6 +75,12 @@ Some important notes about the configuration parameters:
 
 ### Finish installation
 
+Be careful with locales. Your installation might have a different locale than we asume and that can be really problematic. Please be sure that en_GB.UTF-8 is available and use it. For example do:
+
+    $ export LC_ALL=en_US.UTF-8
+
+Then execute:
+
     $ sudo sh shell/apt.sh
     $ sudo puppet apply manifests/init.pp --modulepath modules/
 

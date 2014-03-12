@@ -39,6 +39,7 @@ aptitude update
 
 locale-gen en_GB.UTF-8
 update-locale
+update-locale LANG=en_GB.UTF-8 LC_ALL=en_GB.UTF-8
 
 echo Installing puppet
 aptitude install -y puppet
