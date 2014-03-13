@@ -1,6 +1,6 @@
-class verificatum {    
+class verificatum {
     require packages
-        
+
     package { 'make':
         ensure=> present,
     } ->
@@ -17,7 +17,7 @@ class verificatum {
     }
     exec { '/tmp/vsetup.sh':
         logoutput => true,
-        require => [Package['git'], Package['oracle-java7-installer']],
+        require => [Package['git']],
         creates => '/home/eorchestra/.verificatum_env',
         timeout => 600,
     }

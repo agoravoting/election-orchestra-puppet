@@ -5,7 +5,8 @@ class packages{
     include packages::mercurial
     include packages::nginx
     include packages::py
-    include packages::java
+    # done by apt.sh
+    # include packages::java
     include packages::supervisor
     include packages::vim
     include packages::node

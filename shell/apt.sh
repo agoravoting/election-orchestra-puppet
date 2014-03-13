@@ -43,3 +43,16 @@ update-locale
 echo Installing puppet
 aptitude install -y puppet
 echo "Puppet installed!"
+
+echo Installing java..
+if [ ! -f /usr/bin/java ]
+then
+    /bin/echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+    /bin/echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
+    while ! apt-get install -y oracle-java7-installer
+    do
+        echo "Failed to download java, retrying in 10 seconds.."
+        sleep 10
+    done
+fi
+echo Java installed
