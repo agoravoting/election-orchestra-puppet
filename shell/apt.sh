@@ -10,8 +10,8 @@ apt-get update
 # http://stackoverflow.com/questions/13018626/add-apt-repository-not-found
 apt-get -y install python-software-properties software-properties-common htop sudo aptitude git
 # java
-# http://www.webupd8.org/2012/01/install-oracle-java-jdk-7-in-ubuntu-via.html
-add-apt-repository -y ppa:webupd8team/java
+# http://www.webupd8.org/2014/03/how-to-install-oracle-java-8-in-debian.html
+grep 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' /etc/apt/sources.list || echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" >> /etc/apt/sources.list
 apt-get -y install aptitude realpath
 
 # puppet-python module
@@ -48,12 +48,12 @@ echo "Puppet installed!"
 echo Installing java..
 if [ ! -f /usr/bin/java ]
 then
-    /bin/echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
-    /bin/echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
-    while ! apt-get install -y oracle-java7-installer
+    echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+    while ! apt-get install -y oracle-java8-installer
     do
         echo "Failed to download java, retrying in 10 seconds.."
         sleep 10
     done
+    apt-get install oracle-java8-set-default
 fi
 echo Java installed
