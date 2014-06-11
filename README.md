@@ -215,7 +215,7 @@ If you have problems, you should take a look at the log executing the "sudo eolo
 
 Probably means there is an old instance of verificatum running. Running the following command should kill the processes:
     sudo supervisorctl restart eorchestra
-	
+
 If you're using amazon or some service where the internal private ip address is not the same as the public ip address, setup your ip public/private addresses accordingly in manifests/init.pp
 
 * Verificatum hangs
@@ -230,6 +230,12 @@ Sometimes there are additional entries in /etc/hosts that need to be commented, 
 Needs to be commented so that the correct entry (eg 192.168.50.2 agoravoting-eovm) takes effect
 
 If you're using amazon or some service where the internal private ip address is not the same as the public ip address, setup your ip  public/private addresses accordingly in manifests/init.pp
+
+* Verificatum crashes during a tally with  "Exception in thread "main" java.lang.ArithmeticException: / by zero" (at ArrayWorker.java:86)
+
+This occurs if you attempt to run a tally for an election with 0 votes. If this happens you must restart eorchestra and also kill
+any verificatum processes.
+
 
 ### Problems with SSL certificates
 
@@ -247,7 +253,7 @@ To list pending tasks
 	+----------+------------------+---------------+------------------------------------------+----------------------------+
 	| 0971e535 | approve_election | Test election | https://agoravoting-eovm:5000/api/queues | 2014-03-09 02:49:57.768612 |
 	+----------+------------------+---------------+------------------------------------------+----------------------------+
-	
+
 The above example shows election creation task, as seen in the 'label' text. The following shows an election tally task:
 
 	$ sudo eotasks --list
@@ -278,7 +284,7 @@ To reject it:
     $ sudo eotasks --reject 0971e535
 
 To show full debugging information about a task:
-	
+
 	$ sudo eotasks --show-full 0971e535
-	
+
 	... a lot of text here ..
