@@ -37,7 +37,7 @@ Apply puppet manually with
 
 ## Standalone installation (no vagrant)
 
-You'll need an Ubuntu 12.04 LTS 64 bits fresh installed server, and then:
+You'll need an Debian 7.5 64 bits fresh installed server, and then:
 
 ### Download the repository
 
@@ -230,6 +230,12 @@ Sometimes there are additional entries in /etc/hosts that need to be commented, 
 Needs to be commented so that the correct entry (eg 192.168.50.2 agoravoting-eovm) takes effect
 
 If you're using amazon or some service where the internal private ip address is not the same as the public ip address, setup your ip  public/private addresses accordingly in manifests/init.pp
+
+### Problems with SSL certificates
+
+Sometimes you can run into ssl connectivity issues. election-orchestra is configured to validate the ssl client certificate, and if that doesn't work then the HTTPS petition will not even reach to "eolog". This is because the client certificate validation happens directly in nginx. To see nginx log, we recommend using the following command:
+
+    sudo tail -F /var/log/nginx/access.log
 
 ## Accepting and reviewing tasks in manual mode:
 
