@@ -8,7 +8,7 @@ grep 'http://nginx.org/packages/debian/ wheezy nginx' /etc/apt/sources.list || e
 
 apt-get update
 # http://stackoverflow.com/questions/13018626/add-apt-repository-not-found
-apt-get -y install python-software-properties software-properties-common htop sudo aptitude git
+apt-get -y install python-software-properties software-properties-common htop sudo aptitude git supervisor
 # java
 # http://www.webupd8.org/2014/03/how-to-install-oracle-java-8-in-debian.html
 grep 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' /etc/apt/sources.list || echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" >> /etc/apt/sources.list
@@ -23,7 +23,7 @@ then
 fi
 
 wget -qO /tmp/puppetlabs-release-wheezy.deb https://apt.puppetlabs.com/puppetlabs-release-wheezy.deb
-
+(md5sum /tmp/puppetlabs-release-wheezy.deb | grep 873f97e435c881f5a9d8749033187b73) || (echo "invalid hash for /tmp/puppetlabs-release-wheezy.deb" && exit 1)
 dpkg -i /tmp/puppetlabs-release-wheezy.deb
 rm /tmp/puppetlabs-release-wheezy.deb
 
@@ -44,6 +44,15 @@ update-locale LANG=en_GB.UTF-8 LC_ALL=en_GB.UTF-8
 echo Installing puppet
 aptitude install -y puppet
 echo "Puppet installed!"
+
+
+echo "Installing supervisor 3.0r1-1.."
+wget -qO /tmp/supervisor_3.0r1-1_all.deb http://ftp.br.debian.org/debian/pool/main/s/supervisor/supervisor_3.0r1-1_all.deb
+cd /tmp
+(md5sum supervisor_3.0r1-1_all.deb | grep c2e8b72bf8ba3d0b68f3ba14f9f6d15d) || (echo "invalid hash for supervisor_3.0r1-1_all.deb" && exit 1)
+dpkg -i supervisor_3.0r1-1_all.deb
+rm /tmp/supervisor_3.0r1-1_all.deb
+
 
 echo Installing java..
 if [ ! -f /usr/bin/java ]
