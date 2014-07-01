@@ -42,7 +42,8 @@ update-locale
 update-locale LANG=en_GB.UTF-8 LC_ALL=en_GB.UTF-8
 
 echo Installing puppet
-aptitude install -y puppet
+# version 3.6.2 causes virtual env problems
+aptitude install -y puppet=3.6.1-1puppetlabs1
 echo "Puppet installed!"
 
 
