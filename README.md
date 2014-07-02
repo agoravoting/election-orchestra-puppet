@@ -60,7 +60,7 @@ The basic configuration of your authority will be in election-orchestra-puppet/m
 Some important notes about the configuration parameters:
  * Usually both "private_ipaddress" and "public_ipaddress" variables should be the same. But in Amazon AWS the public ip address is not directly addresable by the machine; it's addresable with other ip address. Only in this kind of case the private ip address should not be the same as the public one. In NO case the private ip address should be set as "127.0.0.1.
 
- * In the case of Amazon AWS, you also need to setup the cloud firewall (which is NOT the internal machine firewall, but one setup externally throught "Security Groups") to allow connections on the TCP/UDP ports specified in the configuration. This might also be needed in other similar setups. Here is a list of the ports used, specifed in the manifests/init.pp configuration file:
+ * In the case of Amazon AWS, you also need to setup the cloud firewall (which is NOT the internal machine firewall, but one setup externally throught "Security Groups") to allow *inbound* connections on the TCP/UDP ports specified in the configuration. This might also be needed in other similar setups. Here is a list of the ports used, specifed in the manifests/init.pp configuration file:
   - "port" is 5000 by default and uses TCP connections
   - "verificatum_server_ports" is 4081 by default (4081-4083 but only first is curently used), and uses TCP connections
   - "verificatum_hint_server_ports" is 8081 by default (8081-8083 but only first is curently used), and uses UDP connections
