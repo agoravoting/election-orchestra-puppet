@@ -9,6 +9,6 @@ export FRESTQ_SETTINGS="base_settings.py"
 # One of the processes that is usually left hanging is verificatum.
 # Note that this is suposedly already handled by supervisor, but we do it also
 # here just in case.
-trap "kill -- -$$" EXIT
+trap "kill -9 -- -$$" EXIT
 
 $HOME/venv/bin/uwsgi --ini $HOME/election-orchestra/auth.ini
