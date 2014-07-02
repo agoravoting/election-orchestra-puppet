@@ -85,7 +85,6 @@ Then execute:
     $ sudo puppet apply manifests/init.pp --modulepath modules/
 
 
-
 ## Usage
 
 ## Managing peer packages
@@ -110,24 +109,24 @@ You can can copy that and send it via email or other means to your peers. They w
 
 You can install an individual package file this way:
 
-    $ sudo eopeers --install <path/to/peer.package>
+    $ sudo eopeers --install <path/to/peer.pkg>
 
 Which should output nothing if everything goes well.
 
 You can install a list of peer packages at once too:
 
-    $ sudo eopeers --install <path/to/peer1.package> <path/to/peer1.package> ...
+    $ sudo eopeers --install <path/to/peer1.pkg> <path/to/peer1.pkg> ...
 
 Typically, someone you trust might send you a tarball with a bunch of peer packages. So what you would do is something like:
 
     $ tar zxf packages.tar.gz
-    $ sudo eopeers --install packages/*.package
+    $ sudo eopeers --install packages/*.pkg
     $ sudo service nginx restart # restart nginx to apply changes
 
 You can also list all installed packages:
 
     $ sudo eopeers --list
-    $ Packages in /etc/eopeers:
+    Packages in /etc/eopeers:
       * peer1
       * peer2
       * agoravoting
