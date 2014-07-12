@@ -11,7 +11,7 @@ Puppet-vagrant setup for election orchestra
 
 ### Download the repository
 
-    $ git clone https://github.com/agoraciudadana/election-orchestra-puppet.git
+    $ git clone https://github.com/agoravoting/election-orchestra-puppet.git
 
 ### Edit your configuration
 
@@ -50,7 +50,7 @@ Install the dependencies and uninstall apache (with root superuser):
 Download election-orchestra-puppet. You can do that with a typical unix user,
 just remember the download path:
 
-    $ git clone https://github.com/agoraciudadana/election-orchestra-puppet.git
+    $ git clone https://github.com/agoravoting/election-orchestra-puppet.git
     $ cd election-orchestra-puppet
 
 ### Edit your configuration
