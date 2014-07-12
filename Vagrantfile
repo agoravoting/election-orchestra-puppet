@@ -25,7 +25,7 @@ Vagrant.configure("2") do |config|
         end
 
         # for development setup
-        # config.vm.network "private_network", ip: "192.168.50.2"
+        config.vm.network "private_network", ip: "192.168.50.2"
     else
         config.vm.box = "dummy"
         config.vm.box_url = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
@@ -52,7 +52,7 @@ Vagrant.configure("2") do |config|
         end
     end
 
-    config.vm.provision :shell, :path => "shell/apt.sh"
+    config.vm.provision :shell, :inline => "cd /vagrant/ && sh ./shell/apt.sh"
 
     config.vm.provision :puppet , :module_path => "modules" , :options => "--verbose" do |puppet|
         puppet.manifests_path = "manifests"

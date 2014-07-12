@@ -210,6 +210,16 @@ And reset a tally of an election by election-id:
 
 If you have problems, you should take a look at the log executing the "sudo eolog" command. You'll see a quite verbose output. Here is a list of the typical problems and their usual solutions:
 
+* Error: Puppet::Parser::AST::Resource failed with error ArgumentError: Invalid resource type anchor
+
+Execute in vagrant with root user:
+
+    puppet module install -i /vagrant/modules/ puppetlabs-stdlib
+
+Exit vagrant and execute:
+
+    vagrant provision
+
 * Invalid socket address
 
 Probably means there is an old instance of verificatum running. Running the following command should kill the processes:
