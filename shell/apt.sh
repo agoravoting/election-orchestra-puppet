@@ -8,7 +8,7 @@ grep 'http://nginx.org/packages/debian/ wheezy nginx' /etc/apt/sources.list || e
 
 apt-get update
 # http://stackoverflow.com/questions/13018626/add-apt-repository-not-found
-apt-get -y install python-software-properties software-properties-common htop sudo aptitude git supervisor
+apt-get -y install python-software-properties software-properties-common htop sudo aptitude git supervisor libfreetype6-dev
 # java
 # http://www.webupd8.org/2014/03/how-to-install-oracle-java-8-in-debian.html
 grep 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' /etc/apt/sources.list || echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" >> /etc/apt/sources.list
