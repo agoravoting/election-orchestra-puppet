@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
         config.vm.box_download_checksum = "33beeeef6f5b180f7cb86bb6bf7d8e8d29a849b051abddc029784eab68874d11"
         config.vm.box_download_checksum_type = "sha256"
 
-		# quarantined, do not need this in dev mode, vms communicate through private network
+        # quarantined, do not need this in dev mode, vms communicate through private network
         # config.vm.network "forwarded_port", guest: 5000, host: 5000
         # config.vm.network "forwarded_port", guest: 4081, host: 4081
         # config.vm.network "forwarded_port", guest: 8081, host: 8081
