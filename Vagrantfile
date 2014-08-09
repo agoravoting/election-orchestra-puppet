@@ -9,9 +9,9 @@ Vagrant.configure("2") do |config|
     config.vm.host_name = "agoravoting-eovm"
 
     if ENV['AWS_SECRET_ACCESS_KEY'].nil?
-        config.vm.box = "precise64"
-        config.vm.box_url = 'http://puppet-vagrant-boxes.puppetlabs.com/debian-73-x64-virtualbox-puppet.box'
-        config.vm.box_download_checksum = "33beeeef6f5b180f7cb86bb6bf7d8e8d29a849b051abddc029784eab68874d11"
+        config.vm.box = "eobox"
+        config.vm.box_url = 'http://puppet-vagrant-boxes.puppetlabs.com/ubuntu-server-10044-x64-vbox4210.box'
+        config.vm.box_download_checksum = "95ab449006216771a3816bf17e4cc24e2775c0e63c00797f6a20f81ceb4bb35e"
         config.vm.box_download_checksum_type = "sha256"
 
         # quarantined, do not need this in dev mode, vms communicate through private network
@@ -53,7 +53,7 @@ Vagrant.configure("2") do |config|
         end
     end
 
-    config.vm.provision :shell, :inline => "cd /vagrant/ && sh ./shell/apt.sh"
+    config.vm.provision :shell, :inline => "cd /vagrant/ && sh ./shell/bootstrap.sh"
 
     config.vm.provision :puppet , :module_path => "modules" , :options => "--verbose" do |puppet|
         puppet.manifests_path = "manifests"

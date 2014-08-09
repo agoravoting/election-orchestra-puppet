@@ -61,8 +61,20 @@ def getTallyData(mypeerpkg):
     }
 
 
+def _apiUrl(path, pkg):
+    '''
+    Given a full api (without the initial '/') path and a package dict, returns
+    a well formed url
+    '''
+    return "https://%(hostname)s:%(port)d/%(path)s" % dict(
+        hostname=pkg["hostname"],
+        port=pkg.get("port", 5000),
+        path=path
+    )
+
 def grabAuthData(eopeers_dir, mypeerpkg, eopeers):
     mypeerpkg = getPeerPkg(mypeerpkg)
+    import pdb; pdb.set_trace()
 
     if not os.path.isdir(eopeers_dir):
         print("%s is not a directory" % eopeers_dir)
@@ -95,7 +107,7 @@ def grabAuthData(eopeers_dir, mypeerpkg, eopeers):
     for auth in auths_data:
         ret_data.append({
             "name": "Auth%d" %i,
-            "orchestra_url": "https://%s:5000/api/queues" % auth["hostname"],
+            "orchestra_url": _apiUrl("api/queues", auth),
             "ssl_cert": auth["ssl_certificate"]
         })
         if i == 1:
@@ -306,7 +318,7 @@ def create(args):
     startServer(localPort)
     mypeerpkg = getPeerPkg(args.mypeerpkg)
     startData = getStartData(args.eopeers_dir, args.mypeerpkg, args.peers)
-    startUrl = 'https://%s:5000/public_api/election' % mypeerpkg["hostname"]
+    startUrl = _apiUrl("public_api/election", mypeerpkg)
     startElection(electionId, startUrl, startData)
     publicKey = waitForPublicKey()
     pkFile = 'pk' + electionId
@@ -390,7 +402,7 @@ def tally(args):
     print("> Votes hash is " + hash)
     tallyData = getTallyData(args.mypeerpkg)
     mypeerpkg = getPeerPkg(args.mypeerpkg)
-    tallyUrl = 'https://%s:5000/public_api/tally' % mypeerpkg["hostname"]
+    tallyUrl = _apiUrl('public_api/tally', mypeerpkg)
     doTally(electionId, tallyUrl, tallyData, ctexts, hash)
     tallyResponse = waitForTally()
 

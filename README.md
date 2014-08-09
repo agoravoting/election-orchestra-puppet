@@ -2,7 +2,6 @@
 
 Puppet-vagrant setup for election orchestra
 
-
 ## Installation (vagrant)
 
 ### Install vagrant
@@ -15,7 +14,10 @@ Puppet-vagrant setup for election orchestra
 
 ### Edit your configuration
 
-The basic configuration of your authority will be in election-orchestra-puppet/manifests/init.pp. Take a look at it and edit accordingly. See more information below in the "Edit Configuration section" for Standalone installation (the configuration settings are the same).
+The basic configuration of your authority is in
+election-orchestra-puppet/manifests/init.pp. Take a look at it and edit
+accordingly. See more information below in the "Edit Configuration section"
+for Standalone installation (the configuration settings are the same).
 
 ### Run
 
@@ -33,19 +35,16 @@ Apply puppet manually with
 
     $ cd /vagrant; sudo puppet apply manifests/init.pp --modulepath modules/
 
-
-
 ## Standalone installation (no vagrant)
 
-You'll need an Debian 7.5 64 bits fresh installed server, and then:
+You'll need an Ubuntu 14.04 LTS 64 bits fresh installed server, and then:
 
 ### Download the repository
 
-Install the dependencies and uninstall apache (with root superuser):
+Install the dependencies (with root superuser):
 
     # apt-get update
-    # apt-get install -y aptitude sudo git-core
-    # aptitude remove apache2 apache2-mpm-prefork apache2.2-common
+    # apt-get install -y git
 
 Download election-orchestra-puppet. You can do that with a typical unix user,
 just remember the download path:
@@ -55,33 +54,61 @@ just remember the download path:
 
 ### Edit your configuration
 
-The basic configuration of your authority will be in election-orchestra-puppet/manifests/init.pp. Take a look at it and edit accordingly.
+The basic configuration of your authority will be in
+election-orchestra-puppet/manifests/init.pp. Take a look at it and edit
+accordingly.
 
 Some important notes about the configuration parameters:
- * Usually both "private_ipaddress" and "public_ipaddress" variables should be the same. But in Amazon AWS the public ip address is not directly addresable by the machine; it's addresable with other ip address. Only in this kind of case the private ip address should not be the same as the public one. In NO case the private ip address should be set as "127.0.0.1.
+ * Usually both "private_ipaddress" and "public_ipaddress" variables should be
+   the same. But in Amazon AWS the public ip address is not directly addresable
+   by the machine; it's addresable with other ip address. Only in this kind of
+   case the private ip address should not be the same as the public one. In NO
+   case the private ip address should be set as "127.0.0.1.
 
- * In the case of Amazon AWS, you also need to setup the cloud firewall (which is NOT the internal machine firewall, but one setup externally throught "Security Groups") to allow *inbound* connections on the TCP/UDP ports specified in the configuration. This might also be needed in other similar setups. Here is a list of the ports used, specifed in the manifests/init.pp configuration file:
+ * In the case of Amazon AWS, you also need to setup the cloud firewall (which
+   is NOT the internal machine firewall, but one setup externally throught
+   "Security Groups") to allow *inbound* connections on the TCP/UDP ports
+   specified in the configuration. This might also be needed in other similar
+   setups. Here is a list of the ports used, specifed in the manifests/init.pp
+   configuration file:
   - "port" is 5000 by default and uses TCP connections
-  - "verificatum_server_ports" is 4081 by default (4081-4083 but only first is curently used), and uses TCP connections
-  - "verificatum_hint_server_ports" is 8081 by default (8081-8083 but only first is curently used), and uses UDP connections
+  - "verificatum_server_ports" is 4081 by default (4081-4083 but only first is
+    curently used), and uses TCP connections
+  - "verificatum_hint_server_ports" is 8081 by default (8081-8083 but only
+    first is curently used), and uses UDP connections
 
- * In general, there's usually no reason/need to change the default ports configuration in settings.
+ * In general, there's usually no reason/need to change the default ports
+   configuration in settings.
 
- * The "hostname" is used as the name other authorities will address this machine. For improved security, election-orchestra-puppet does not rely on DNS information for ip address resolution, but uses the information setup with the keys "hostname" and "public_ipaddress" and via "eopeers" command for adress resolution. The name of the machine should just be an addresable machine name like "agoravoting-whatever" or "pepito".
+ * The "hostname" is used as the name other authorities will address this
+   machine. For improved security, election-orchestra-puppet does not rely on
+   DNS information for ip address resolution, but uses the information setup
+   with the keys "hostname" and "public_ipaddress" and via "eopeers" command
+   for adress resolution. The name of the machine should just be an addresable
+   machine name like "agoravoting-whatever" or "pepito".
 
- * The "backup_password" is stored in /root/.backup_password and is used to automatically encrypt/decrypt with gpg when creating or restoring backups. Backups are explained explained below in a subsection.
+ * The "backup_password" is stored in /root/.backup_password and is used to
+   automatically encrypt/decrypt with gpg when creating or restoring backups.
+   Backups are explained explained below in a subsection.
 
- * The "auto_mode" is explained later on in a subsection of this document. If "auto_mode" is set to true, the two operations "create publickey for an election" and "tally an election" will be performed automatically without the need of the confirmation by the authority operator. This is set true by default because it's good for testing, but for important election and improved security you should set it to false as explained below.
+ * The "auto_mode" is explained later on in a subsection of this document. If
+   "auto_mode" is set to true, the two operations "create publickey for an
+   election" and "tally an election" will be performed automatically without the
+   need of the confirmation by the authority operator. This is set true by
+   default because it's good for testing, but for important election and
+   improved security you should set it to false as explained below.
 
 ### Finish installation
 
-Be careful with locales. Your installation might have a different locale than we asume and that can be really problematic. Please be sure that en_GB.UTF-8 is available and use it. For example do:
+Be careful with locales. Your installation might have a different locale than
+we asume and that can be really problematic. Please be sure that en_GB.UTF-8 is
+available and use it. For example do:
 
     $ export LC_ALL=en_US.UTF-8
 
 Then execute:
 
-    $ sudo sh shell/apt.sh
+    $ sudo sh shell/bootstrap.sh
     $ sudo puppet apply manifests/init.pp --modulepath modules/
 
 
@@ -89,9 +116,15 @@ Then execute:
 
 ## Managing peer packages
 
-Part of the security of this particular kind of election-orchestra deployment method comes from only allowing connection from trusted peers. This is because we limit connections from known peers by SSL certificate and IP address.
+Part of the security of this particular kind of election-orchestra deployment
+method comes from only allowing connection from trusted peers. This is because
+we limit connections from known peers by SSL certificate and IP address.
 
-To add another peers, ask them for their "peer package". This is a very simple file that contains the SSL certificate, IP address and hostname of the peer. When you setup your authority, you need to add the peer packages of the agora-ciudadana servers that can create elections and the other election-orchestra authorities you recognize and trust.
+To add another peers, ask them for their "peer package". This is a very simple
+file that contains the SSL certificate, IP address and hostname of the peer.
+When you setup your authority, you need to add the peer packages of the
+agora-ciudadana servers that can create elections and the other
+election-orchestra authorities you recognize and trust.
 
 To generate your own peer package, execute:
 
