@@ -74,7 +74,6 @@ def _apiUrl(path, pkg):
 
 def grabAuthData(eopeers_dir, mypeerpkg, eopeers):
     mypeerpkg = getPeerPkg(mypeerpkg)
-    import pdb; pdb.set_trace()
 
     if not os.path.isdir(eopeers_dir):
         print("%s is not a directory" % eopeers_dir)
