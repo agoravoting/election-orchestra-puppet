@@ -278,6 +278,28 @@ If you're using amazon or some service where the internal private ip address is 
 This occurs if you attempt to run a tally for an election with 0 votes. If this happens you must restart eorchestra and also kill
 any verificatum processes.
 
+* The following messages appears in eolog:
+
+    File "./tally_election/performer_jobs.py", line 391, in verify_and_publish_tally
+      raise TaskError(dict(reason="invalid tally proofs"))
+  TaskError
+
+See the next point
+
+* General out of memory errors
+
+  Verificatum may be killed by the kernel when it is using too much memory. This may show up in the eolog output with the unexpected message
+
+  "Killed"
+
+  as output for some os subprocess call by election orchestra. To diagnose this, inspect the kernel log, for example in ubuntu:
+
+  vi /var/log/kern.log
+
+  The following example shows that the kernel killed verificatum:
+
+  Oct  6 23:08:58 wadobo-auth1 kernel: [527984.864767] Out of memory: Kill process 8734 (java) score 660 or sacrifice child
+  Oct  6 23:08:58 wadobo-auth1 kernel: [527984.864799] Killed process 8734 (java) total-vm:5702824kB, anon-rss:908308kB, file-rss:0kB
 
 ### Problems with SSL certificates
 
