@@ -254,7 +254,7 @@ def waitForPublicKey():
         diff = time.time() - start
         try:
             pk = cv.data['session_data'][0]['pubkey']
-            print("> Election created (" + str(diff) + " sec), public key is")
+            print("> Election created " + str(diff) + " sec, public key is")
             print(pk)
         except:
             print("* Could not retrieve public key " + str(cv.data))
@@ -283,7 +283,7 @@ def waitForTally():
     if(cv.done):
         diff = time.time() - start
         # print("> Received tally data (" + str(diff) + " sec) " + str(cv.data))
-        print("> Received tally data (" + str(diff) + " sec)")
+        print("> Received tally data " + str(diff) + " sec")
         if('tally_url' in cv.data['data']):
             ret = cv.data['data']
     else:
