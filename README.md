@@ -278,7 +278,9 @@ If you're using amazon or some service where the internal private ip address is 
 This occurs if you attempt to run a tally for an election with 0 votes. If this happens you must restart eorchestra and also kill
 any verificatum processes.
 
-* A traceback such as the following appears:
+* verify_and_publish_tally error
+
+A traceback such as the following appears:
 
     Traceback (most recent call last):
     File "build/bdist.linux-x86_64/egg/frestq/tasks.py", line 1268, in post_task
