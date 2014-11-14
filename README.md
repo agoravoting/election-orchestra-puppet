@@ -280,18 +280,18 @@ any verificatum processes.
 
 * A trace back such as the following appears:
 
-      Traceback (most recent call last):
-        File "build/bdist.linux-x86_64/egg/frestq/tasks.py", line 1268, in post_task
-          task_output = task.run_action_handler()
-        File "build/bdist.linux-x86_64/egg/frestq/tasks.py", line 286, in run_action_handler
-          return self.action_handler(self)
-        File "./tally_election/performer_jobs.py", line 413, in verify_and_publish_tally
-          "election_id = %s" % election_id))
-      TaskError
+    Traceback (most recent call last):
+    File "build/bdist.linux-x86_64/egg/frestq/tasks.py", line 1268, in post_task
+    task_output = task.run_action_handler()
+    File "build/bdist.linux-x86_64/egg/frestq/tasks.py", line 286, in run_action_handler
+    return self.action_handler(self)
+    File "./tally_election/performer_jobs.py", line 413, in verify_and_publish_tally
+    "election_id = %s" % election_id))
+    TaskError
 
 This occurs if you run a tally on an election for which a tally file already exists. You must first reset the tally with
 
-reset-tally <election_id>
+    $ sudo reset-tally <election-id>
 
 * General out of memory errors
 
