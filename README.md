@@ -278,13 +278,20 @@ If you're using amazon or some service where the internal private ip address is 
 This occurs if you attempt to run a tally for an election with 0 votes. If this happens you must restart eorchestra and also kill
 any verificatum processes.
 
-* The following messages appears in eolog:
+* A trace back such as the following appears:
 
-    File "./tally_election/performer_jobs.py", line 391, in verify_and_publish_tally
-      raise TaskError(dict(reason="invalid tally proofs"))
-  TaskError
+Traceback (most recent call last):
+  File "build/bdist.linux-x86_64/egg/frestq/tasks.py", line 1268, in post_task
+    task_output = task.run_action_handler()
+  File "build/bdist.linux-x86_64/egg/frestq/tasks.py", line 286, in run_action_handler
+    return self.action_handler(self)
+  File "./tally_election/performer_jobs.py", line 413, in verify_and_publish_tally
+    "election_id = %s" % election_id))
+TaskError
 
-See the next point
+This occurs if you run a tally on an election for which a tally file already exists. You must first reset the tally with
+
+reset-tally <election_id>
 
 * General out of memory errors
 
