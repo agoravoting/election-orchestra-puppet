@@ -426,10 +426,10 @@ def main(argv):
         print("> Creating data directory")
         os.makedirs(DATA_DIR)
     parser = argparse.ArgumentParser(description='EO testing script', formatter_class=RawTextHelpFormatter)
-    parser.add_argument('command', nargs='+', default='full', help='''create: creates an election
-encrypt <electionId>: encrypts votes
-tally <electionId>: launches tally
-full: does the whole process''')
+    parser.add_argument('command', nargs='+', default='full', help='''create [electionId]: creates an election
+encrypt [electionId]: encrypts votes
+tally [electionId]: launches tally
+full [electionId]: does the whole process''')
     parser.add_argument('--eopeers-dir', help='directory with the eopeers packages to use as authorities', default = '/etc/eopeers/')
     parser.add_argument('--peers', nargs='+', default=None, help='list of authorities to pair with. defaults to all of them')
     parser.add_argument('--mypeerpkg', help='path to my peer package. if empty, calls to eopeers --show-mine', default = None)
@@ -440,9 +440,8 @@ full: does the whole process''')
     args = parser.parse_args()
     command = args.command[0]
     if hasattr(__main__, command):
-        if(command == 'create') or (command == 'full'):
-            args.electionId = str(time.time()).replace(".", "")
-        elif(len(args.command) == 2):
+        args.electionId = str(time.time()).replace(".", "")
+        if len(args.command) == 2:
             args.electionId = args.command[1]
         else:
             parser.print_help()
