@@ -38,7 +38,6 @@ if not os.path.exists(DATA_DIR):
 os.chdir(DATA_DIR)
 
 # configuration
-localPort = 8000
 node = '/usr/bin/node'
 
 def getPeerPkg(mypeerpkg):
@@ -49,14 +48,14 @@ def getPeerPkg(mypeerpkg):
     else:
         return mypeerpkg
 
-def getTallyData(mypeerpkg):
-    mypeerpkg = getPeerPkg(mypeerpkg)
+def getTallyData(args):
+    mypeerpkg = getPeerPkg(args.mypeerpkg)
     localServer = mypeerpkg["hostname"]
     return {
         # 'election_id': electionId,
-        "callback_url": "http://" + localServer + ":" + str(localPort) + "/receive_tally",
+        "callback_url": "http://" + localServer + ":" + str(args.port) + "/receive_tally",
         "extra": [],
-        "votes_url": "http://" + localServer + ":" + str(localPort) + "/",
+        "votes_url": "http://" + localServer + ":" + str(args.port) + "/",
         "votes_hash": "sha512://"
     }
 
@@ -118,12 +117,12 @@ def grabAuthData(eopeers_dir, mypeerpkg, eopeers):
     print("\n")
     return ret_data
 
-def getStartData(eopeers_dir, mypeerpkg, eopeers):
+def getStartData(port, eopeers_dir, mypeerpkg, eopeers):
     mypeerpkg = getPeerPkg(mypeerpkg)
     return {
         # "election_id": electionId,
         "is_recurring": False,
-        "callback_url": "http://" + mypeerpkg["hostname"] + ":" + str(localPort) + "/key_done",
+        "callback_url": "http://" + mypeerpkg["hostname"] + ":" + str(port) + "/key_done",
         "extra": [],
         "title": "Test election",
         "url": "https://example.com/election/url",
@@ -314,9 +313,9 @@ def downloadTally(url, electionId):
 
 def create(args):
     electionId = args.electionId
-    startServer(localPort)
+    startServer(args.port)
     mypeerpkg = getPeerPkg(args.mypeerpkg)
-    startData = getStartData(args.eopeers_dir, args.mypeerpkg, args.peers)
+    startData = getStartData(args.port, args.eopeers_dir, args.mypeerpkg, args.peers)
     startUrl = _apiUrl("public_api/election", mypeerpkg)
     startElection(electionId, startUrl, startData)
     publicKey = waitForPublicKey()
@@ -391,7 +390,7 @@ def encrypt(args):
 
 def tally(args):
     if(args.command[0] == "tally"):
-        startServer(localPort)
+        startServer(args.port)
 
     electionId = args.electionId
 
@@ -399,7 +398,7 @@ def tally(args):
     # need hash
     hash = hash_file(ctexts)
     print("> Votes hash is " + hash)
-    tallyData = getTallyData(args.mypeerpkg)
+    tallyData = getTallyData(args)
     mypeerpkg = getPeerPkg(args.mypeerpkg)
     tallyUrl = _apiUrl('public_api/tally', mypeerpkg)
     doTally(electionId, tallyUrl, tallyData, ctexts, hash)
@@ -435,7 +434,8 @@ full: does the whole process''')
     parser.add_argument('--peers', nargs='+', default=None, help='list of authorities to pair with. defaults to all of them')
     parser.add_argument('--mypeerpkg', help='path to my peer package. if empty, calls to eopeers --show-mine', default = None)
     parser.add_argument('--vfile', help='json file to read votes from', default = 'votes.json')
-    parser.add_argument('--vcount', help='number of votes to generate (generates duplicates if more than in json file)', type=int, default = 0)
+    parser.add_argument('--vcount', help='number of votes to generate (generates duplicates if more than in json file)', type=int, default=0)
+    parser.add_argument('--port', help='port to be used', type=int, default=8000)
     parser.add_argument('--vmnd', action='store_true', help='encrypts with vmnd')
     args = parser.parse_args()
     command = args.command[0]
