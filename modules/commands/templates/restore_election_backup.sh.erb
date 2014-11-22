@@ -1,0 +1,86 @@
+#!/bin/bash
+
+if [ ! "$(whoami)" == "root" ]
+then
+    echo "You need to execute this command as root"
+    exit 1
+fi
+
+[ -z $1 ] && { echo "No election backup passed as argument"; exit 1; }
+
+if [ ! -f $1 ]
+then
+    echo "$1 is not a file or cannot be read"
+    exit 1
+fi
+
+export BACKUPD=/tmp/backup
+export EO_DIR=/home/eorchestra/election-orchestra/
+
+[[ $1 =~ ^election_([0-9]+)_ ]] || { echo "Not an election backup"; exit 1;}
+ELECTION=${BASH_REMATCH[1]}
+[ -z $ELECTION ] && { echo "Could not obtain election name"; exit 1; }
+
+[ -d $EO_DIR/datastore/private/${ELECTION}_bak ] && { echo "Clean up backup directory $EO_DIR/datastore/private/${ELECTION}_bak first"; exit 1;}
+[ -d /srv/election-orchestra/server1/public/${ELECTION}_bak ] && { echo "Clean up backup directory /srv/election-orchestra/server1/public/${ELECTION}_bak first"; exit 1;}
+
+rm -rf $BACKUPD
+mkdir -p $BACKUPD
+PASSWORD=$(cat /root/.backup_password)
+gpg --passphrase "$PASSWORD" -o $BACKUPD/tmp.tar.gz -d $1  2>/dev/null
+cd $BACKUPD
+
+tar zxf tmp.tar.gz --strip=1
+rm tmp.tar.gz
+
+supervisorctl stop eorchestra
+
+# backup existing just in case
+su - orchestra -c "pg_dump eorchestra" > /tmp/eo_pre_restore_db.sql
+# restore
+su - postgres -c "psql -c 'copy election from '\'$BACKUPD/election.copy\''' eorchestra"
+su - postgres -c "psql -c 'copy authority from '\'$BACKUPD/authority.copy\''' eorchestra"
+su - postgres -c "psql -c 'copy session from '\'$BACKUPD/session.copy\''' eorchestra"
+
+supervisorctl start eorchestra
+
+if [ ! -d $EO_DIR/datastore/private/ ]
+then
+    mkdir -p $EO_DIR/datastore/private/
+    chown eorchestra:users $EO_DIR/datastore/private/
+fi
+
+if [ ! -d /srv/election-orchestra/server1/public/ ]
+then
+    mkdir -p /srv/election-orchestra/server1/public/
+    chown eorchestra:users /srv/election-orchestra/server1/public/
+fi
+
+if [ -d $EO_DIR/datastore/private/$ELECTION ]
+then
+    mv $EO_DIR/datastore/private/$ELECTION $EO_DIR/datastore/private/${ELECTION}_bak
+fi
+mkdir -p $EO_DIR/datastore/private/$ELECTION
+
+if [ -d /srv/election-orchestra/server1/public/$ELECTION ]
+then
+    mv /srv/election-orchestra/server1/public/$ELECTION /srv/election-orchestra/server1/public/${ELECTION}_bak
+fi
+mkdir -p /srv/election-orchestra/server1/public/$ELECTION
+
+if [ -d $BACKUPD/eo_private/ ]
+then
+    echo "Restoring files into $EO_DIR/datastore/private/$ELECTION"
+    cp -rpxf $BACKUPD/eo_private/* $EO_DIR/datastore/private/$ELECTION
+    chown eorchestra:users $EO_DIR/datastore/private/$ELECTION
+fi
+
+if [ -d  $BACKUPD/eo_public/ ]
+then
+    echo "Restoring files into /srv/election-orchestra/server1/public/$ELECTION"
+    cp -rpxf $BACKUPD/eo_public/* /srv/election-orchestra/server1/public/$ELECTION
+    chown eorchestra:users /srv/election-orchestra/server1/public/$ELECTION
+fi
+
+cd
+rm -rf $BACKUPD

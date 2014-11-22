@@ -1,0 +1,52 @@
+#!/bin/bash
+
+if [ ! "$(whoami)" == "root" ]
+then
+  echo "You need to execute this command as root"
+  exit 1
+fi
+
+ELECTION=$1
+[ -z $ELECTION ] && { echo "No election passed as argument"; exit 1; }
+
+BACKUPD=/tmp/backup
+BACKUP_DIR=/backup
+EO_DIR=/home/eorchestra/election-orchestra/
+DATE=`date '+%d_%m_%y_%H_%M'`
+
+rm -rf $BACKUPD
+mkdir -p $BACKUPD
+cd $BACKUPD
+
+[ -d $BACKUP_DIR ] || mkdir $BACKUP_DIR
+
+supervisorctl stop eorchestra
+
+# su - eorchestra -c "pg_dump --data-only --column-inserts --disable-triggers eorchestra" > $BACKUPD/eo_${ELECTION}_db.sql
+su - postgres -c "psql -c 'copy (select * from authority where election_id = '\'$ELECTION\'') TO '\'/tmp/authority.copy\''' eorchestra"
+su - postgres -c "psql -c 'copy (select * from election where id = '\'$ELECTION\'') TO '\'/tmp/election.copy\''' eorchestra"
+su - postgres -c "psql -c 'copy (select * from session where election_id = '\'$ELECTION\'') TO '\'/tmp/session.copy\''' eorchestra"
+
+mv /tmp/*.copy .
+
+supervisorctl start eorchestra
+
+if [ ! $(ls /srv/election-orchestra/server1/public/ | wc -l) -eq "0" ]
+then
+    cp -rpxf /srv/election-orchestra/server1/public/$ELECTION $BACKUPD/eo_public
+    rm -f $BACKUPD/$ELECTION/eo_public/tally*
+fi
+
+if [ ! $(ls $EO_DIR/datastore/private/ | wc -l) -eq "0" ]
+then
+    cp -rpxf $EO_DIR/datastore/private/$ELECTION $BACKUPD/eo_private
+fi
+
+BACKUP="${BACKUP_DIR}/election_${ELECTION}_${DATE}.tar.gz"
+cd $(dirname $BACKUPD)
+tar zcf "${BACKUP_DIR}/election_${ELECTION}_${DATE}.tar.gz" $(basename $BACKUPD)
+
+PASSWORD=$(cat /root/.backup_password)
+
+gpg --passphrase "$PASSWORD" -c $BACKUP 2>/dev/null
+rm $BACKUP

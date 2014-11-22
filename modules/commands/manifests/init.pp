@@ -5,6 +5,12 @@ class commands() {
         content => template('commands/create_backup.sh.erb'),
     } ->
 
+    file { '/usr/bin/create_election_backup.sh':
+        ensure  => file,
+        mode    => 'a+x',
+        content => template('commands/create_election_backup.sh.erb'),
+    } ->
+
     file { '/root/.backup_password':
         ensure  => file,
         mode    => '0600',
@@ -16,6 +22,12 @@ class commands() {
         ensure  => file,
         mode    => 'a+x',
         content => template('commands/restore_backup.sh.erb'),
+    } ->
+
+    file { '/usr/bin/restore__election_backup.sh':
+        ensure  => file,
+        mode    => 'a+x',
+        content => template('commands/restore_election_backup.sh.erb'),
     } ->
 
     file { '/usr/bin/eopeers':
@@ -89,7 +101,7 @@ class commands() {
         mode    => 'a+x',
         content => template('commands/eotasks.erb'),
     } ->
-	
+
 	file { '/usr/bin/eotasks.py':
         ensure  => file,
         mode    => 'a+x',
